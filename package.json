@@ -1,0 +1,29 @@
+{
+  "name": "02-nodejs-expressjs",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/joetlobb/nodeJS-02-Expressjs#readme",
+  "bugs": {
+    "url": "https://github.com/joetlobb/nodeJS-02-Expressjs/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joetlobb/nodeJS-02-Expressjs.git"
+  },
+  "license": "ISC",
+  "author": "Gulyapas Poonkawinsiri",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc && nodemon dist/app.js"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.0.0",
+    "nodemon": "^3.1.11"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
