@@ -1,13 +1,11 @@
 import { Router } from "express";
 import path from "path";
-import { fileURLToPath } from "url";
+import rootDir from "../util/path.ts";
 
 const router = Router();
 
 router.get("/", (req, res, next) => {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-  res.sendFile(path.join(__dirname, "../", "views", "shop.html"));
+  res.sendFile(path.join(rootDir, "views", "shop.html"));
 });
 
 export default router;
