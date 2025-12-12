@@ -5,7 +5,7 @@ import express from "express";
 import bodyParser from "body-parser";
 
 import rootDir from "./util/path.ts";
-import adminRoutes from "./routes/admin.ts";
+import { router as adminRoutes } from "./routes/admin.ts";
 import shopRoutes from "./routes/shop.ts";
 
 const __filename = fileURLToPath(import.meta.url);
