@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import express from "express";
 import bodyParser from "body-parser";
 
+import rootDir from "./util/path.ts";
 import adminRoutes from "./routes/admin.ts";
 import shopRoutes from "./routes/shop.ts";
 
@@ -13,6 +14,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(rootDir, "..", "public")));
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
