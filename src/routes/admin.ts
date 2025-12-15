@@ -1,10 +1,13 @@
 import { Router } from "express";
-import { getAddProduct, postAddProduct } from "../controllers/products.ts";
+import { getAddProduct, getProducts, postAddProduct } from "../controllers/admin.ts";
 
 const router = Router();
 
 // /admin/add-product >>> GET
 router.get("/add-product", getAddProduct);
+
+// /admin/products >>> GET
+router.get("/products", getProducts);
 
 // /admin/add-product >>> POST
 router.post("/add-product", postAddProduct);

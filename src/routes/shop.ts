@@ -1,8 +1,11 @@
 import { Router } from "express";
-import { getProducts } from "../controllers/products.ts";
+import { getCart, getCheckout, getIndex, getProducts } from "../controllers/shop.ts";
 
 const router = Router();
 
-router.get("/", getProducts);
+router.get("/", getIndex);
+router.get("/products", getProducts);
+router.get("/cart", getCart);
+router.get("/checkout", getCheckout);
 
 export default router;
