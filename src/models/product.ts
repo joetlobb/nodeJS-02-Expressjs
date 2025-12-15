@@ -18,16 +18,28 @@ const getProductsFromFile = (callback: (products: IProduct[]) => void): void => 
     })
 }
 
-export class Product {
-    title: string;
+export class Product implements IProduct {
+    private title: string;
+    private imageUrl: string;
+    private price: number;
+    private description: string;
 
-    constructor(title: string) {
+    constructor(title: string, imageUrl: string, price: number, description: string) {
         this.title = title;
+        this.imageUrl = imageUrl;
+        this.price = price;
+        this.description = description;
     }
 
     save(): void {
         getProductsFromFile((products: IProduct[]) => {
-            products.push(this);
+            const productData: IProduct = {
+                title: this.title,
+                imageUrl: this.imageUrl,
+                price: this.price,
+                description: this.description
+            }
+            products.push(productData);
             fs.writeFile(filePath, JSON.stringify(products), err => {
                 console.log(err);
             })

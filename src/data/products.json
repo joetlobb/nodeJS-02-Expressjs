@@ -1,1 +1,8 @@
-[{"title":"Book1"},{"title":"Book2"}]
+[
+    {
+        "title": "123",
+        "imageUrl": "https://image7.niceoppai.net/f9/ec/Upload-One-Piece-1153-K-aGUyNHh6aXpMTm5UdFNRWFVpaWV3UzcxNkRBcjB0MUV3L2dpOG92MHhTOD0-By-Niceoppai.jpg",
+        "price": "1234",
+        "description": "1235"
+    }
+]
