@@ -18,17 +18,19 @@ const getProductsFromFile = (callback: (products: IProduct[]) => void): void => 
     })
 }
 
-export class Product implements IProduct {
+export class Product {
     private title: string;
     private imageUrl: string;
     private price: number;
     private description: string;
+    private id: string;
 
     constructor(title: string, imageUrl: string, price: number, description: string) {
         this.title = title;
         this.imageUrl = imageUrl;
         this.price = price;
         this.description = description;
+        this.id = Math.random().toString();
     }
 
     save(): void {
@@ -37,7 +39,8 @@ export class Product implements IProduct {
                 title: this.title,
                 imageUrl: this.imageUrl,
                 price: this.price,
-                description: this.description
+                description: this.description,
+                id: this.id
             }
             products.push(productData);
             fs.writeFile(filePath, JSON.stringify(products), err => {
@@ -48,5 +51,14 @@ export class Product implements IProduct {
 
     static fetchAll(callback: (products: IProduct[]) => void): void {
         getProductsFromFile(callback);
+    }
+
+    static findById(id: string, callback: (product: IProduct) => void) {
+        getProductsFromFile(products => {
+            const product = products.find(prod => prod.id === id)
+            if (product) {
+                callback(product);
+            }
+        })
     }
 }

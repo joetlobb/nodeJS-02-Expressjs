@@ -26,6 +26,21 @@ export const getCart: IRequestHandler = (req, res, next) => {
     res.render("shop/cart", { pageTitle: "Your Cart", path: "/cart" });
 }
 
+export const getProduct: IRequestHandler = (req, res, next) => {
+    const prodId = req.params.productId;
+    if (prodId) {
+        Product.findById(prodId, (product: IProduct) => {
+            res.render("shop/product-detail", {
+                pageTitle: product.title,
+                path: "/products",
+                product: product
+            })
+        });
+    } else {
+        res.redirect('/products');
+    }
+}
+
 export const getOrders: IRequestHandler = (req, res, next) => {
     res.render("shop/orders", { pageTitle: "Your Orders", path: "/orders" });
 }
