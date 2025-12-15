@@ -7,6 +7,17 @@ export const products: IProduct[] = [];
 
 const filePath = path.join(rootDir, "data", "products.json");
 
+const getProductsFromFile = (callback: (products: IProduct[]) => void): void => {
+    fs.readFile(filePath, { encoding: "utf-8" }, (err, fileContent) => {
+        if (err || fileContent === "") {
+            callback([]);
+        } else {
+            const products: IProduct[] = JSON.parse(fileContent);
+            callback(products);
+        }
+    })
+}
+
 export class Product {
     title: string;
 
@@ -15,11 +26,7 @@ export class Product {
     }
 
     save(): void {
-        let products: IProduct[] = [];
-        fs.readFile(filePath, { encoding: "utf-8" }, (err, fileContent) => {
-            if (!err) {
-                products = JSON.parse(fileContent);
-            }
+        getProductsFromFile((products: IProduct[]) => {
             products.push(this);
             fs.writeFile(filePath, JSON.stringify(products), err => {
                 console.log(err);
@@ -27,14 +34,7 @@ export class Product {
         })
     }
 
-    static fetchAll(callback: (products: IProduct[]) => void): IProduct[] {
-        fs.readFile(filePath, { encoding: "utf-8" }, (err, fileContent) => {
-            if (err) {
-                return [];
-            }
-            const products: IProduct[] = JSON.parse(fileContent);
-            return callback(products);
-        })
-        return [];
+    static fetchAll(callback: (products: IProduct[]) => void): void {
+        getProductsFromFile(callback);
     }
 }
