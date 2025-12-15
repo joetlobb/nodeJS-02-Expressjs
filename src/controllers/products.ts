@@ -1,7 +1,5 @@
+import { Product } from "../models/product.ts";
 import type { IRequestHandler } from "../types/express-types.ts";
-import type { IProduct } from "../models/products.ts";
-
-export const products: IProduct[] = [];
 
 export const getAddProduct: IRequestHandler = (req, res, next) => {
     res.render("add-product", {
@@ -14,11 +12,13 @@ export const getAddProduct: IRequestHandler = (req, res, next) => {
 }
 
 export const postAddProduct: IRequestHandler = (req, res, next) => {
-    products.push({ title: req.body.title });
+    const product = new Product(req.body.title);
+    product.save();
     res.redirect("/");
 }
 
 export const getProducts: IRequestHandler = (req, res, next) => {
+    const products = Product.fetchAll();
     res.render("shop", {
         prods: products,
         pageTitle: "Shop",
