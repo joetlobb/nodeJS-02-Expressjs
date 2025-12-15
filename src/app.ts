@@ -3,9 +3,10 @@ import path from "path";
 import express from "express";
 import bodyParser from "body-parser";
 
-import rootDir from "./util/path.ts";
-import { router as adminRoutes } from "./routes/admin.ts";
+import rootDir from "./utils/path.ts";
+import adminRoutes from "./routes/admin.ts";
 import shopRoutes from "./routes/shop.ts";
+import { get404 } from "./controllers/error.ts";
 
 const app = express();
 
@@ -18,11 +19,6 @@ app.use(express.static(path.join(rootDir, "..", "public")));
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
-app.use((req, res, next) => {
-  res.status(404).render("404", {
-    pageTitle: "Page Not Found",
-    path: req.url,
-  });
-});
+app.use(get404);
 
 app.listen(3000);

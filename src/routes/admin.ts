@@ -1,23 +1,12 @@
 import { Router } from "express";
-import type { IProduct } from "../models/products.ts";
+import { getAddProduct, postAddProduct } from "../controllers/products.ts";
 
-export const router = Router();
-
-export const products: IProduct[] = [];
+const router = Router();
 
 // /admin/add-product >>> GET
-router.get("/add-product", (req, res, next) => {
-  res.render("add-product", {
-    pageTitle: "Add Product",
-    path: "/admin/add-product",
-    productCSS: true,
-    formsCSS: true,
-    activeAddProduct: true,
-  });
-});
+router.get("/add-product", getAddProduct);
 
 // /admin/add-product >>> POST
-router.post("/add-product", (req, res, next) => {
-  products.push({ title: req.body.title });
-  res.redirect("/");
-});
+router.post("/add-product", postAddProduct);
+
+export default router;
