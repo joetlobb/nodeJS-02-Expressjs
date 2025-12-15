@@ -26,6 +26,10 @@ export const getCart: IRequestHandler = (req, res, next) => {
     res.render("shop/cart", { pageTitle: "Your Cart", path: "/cart" });
 }
 
+export const getOrders: IRequestHandler = (req, res, next) => {
+    res.render("shop/orders", { pageTitle: "Your Orders", path: "/orders" });
+}
+
 export const getCheckout: IRequestHandler = (req, res, next) => {
     res.render("shop/checkout", { pageTitle: "Checkout", path: "/checkout" });
 }
