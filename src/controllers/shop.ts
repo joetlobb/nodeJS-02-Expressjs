@@ -1,3 +1,4 @@
+import { Cart } from "../models/cart.ts";
 import { Product } from "../models/product.ts";
 import type { IRequestHandler } from "../types/express-types.ts";
 import type { IProduct } from "../types/products.ts";
@@ -24,6 +25,14 @@ export const getIndex: IRequestHandler = (req, res, next) => {
 
 export const getCart: IRequestHandler = (req, res, next) => {
     res.render("shop/cart", { pageTitle: "Your Cart", path: "/cart" });
+}
+
+export const postCart: IRequestHandler = (req, res, next) => {
+    const prodId: string = req.body.productId;
+    Product.findById(prodId, (product: IProduct) => {
+        Cart.addProduct(prodId, product.price);
+    });
+    res.redirect("/cart")
 }
 
 export const getProduct: IRequestHandler = (req, res, next) => {
