@@ -3,12 +3,10 @@ import type { IRequestHandler } from "../types/express-types.ts";
 import type { IProduct } from "../types/products.ts";
 
 export const getAddProduct: IRequestHandler = (req, res, next) => {
-    res.render("admin/add-product", {
+    res.render("admin/edit-product", {
         pageTitle: "Add Product",
         path: "/admin/add-product",
-        productCSS: true,
-        formsCSS: true,
-        activeAddProduct: true,
+        isEditing: false,
     });
 }
 
@@ -20,6 +18,31 @@ export const postAddProduct: IRequestHandler = (req, res, next) => {
     const product = new Product(title, imageUrl, price, description);
     product.save();
     res.redirect("/");
+}
+
+export const getEditProduct: IRequestHandler = (req, res, next) => {
+    const editMode = req.query.edit === "true" ? true : false;
+    if (!editMode) {
+        return res.redirect("/");
+    };
+    const prodId = req.params.productId;
+    if (prodId) {
+        Product.findById(prodId, (product: IProduct) => {
+            if (!product) {
+                return res.redirect("/");
+            };
+            res.render("admin/edit-product", {
+                pageTitle: "Edit Product",
+                path: "/admin/edit-product",
+                editing: editMode,
+                product: product,
+            });
+        });
+    }
+}
+
+export const postEditProduct: IRequestHandler = (req, res, next) => {
+    
 }
 
 export const getProducts: IRequestHandler = (req, res, next) => {
