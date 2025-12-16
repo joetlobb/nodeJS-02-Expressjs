@@ -58,4 +58,15 @@ export class Cart {
             }
         })
     }
+
+    static getCart(callback: (cart: ICart) => void) {
+        fs.readFile(filePath, { encoding: "utf-8" }, (err, fileContent) => {
+            if (err && fileContent === "") {
+                return callback({ products: [], totalPrice: 0 });
+            } else {
+                const cart: ICart = JSON.parse(fileContent);
+                callback(cart);
+            }
+        })
+    }
 }
