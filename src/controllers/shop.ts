@@ -49,6 +49,16 @@ export const postCart: IRequestHandler = (req, res, next) => {
     res.redirect("/cart")
 }
 
+export const postCartDeleteProduct: IRequestHandler = (req, res, next) => {
+    const prodId: string | undefined = req.body.productId;
+    if (prodId) {
+        Product.findById(prodId, (product: IProduct) => {
+            Cart.deleteProduct(prodId, product.price);
+            res.redirect("/cart");
+        });
+    }
+}
+
 export const getProduct: IRequestHandler = (req, res, next) => {
     const prodId = req.params.productId;
     if (prodId) {
