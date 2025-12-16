@@ -25,12 +25,12 @@ export class Product {
     private description: string;
     private id: string;
 
-    constructor(title: string, imageUrl: string, price: number, description: string) {
+    constructor(title: string, imageUrl: string, price: number, description: string, id?: string) {
         this.title = title;
         this.imageUrl = imageUrl;
         this.price = price;
         this.description = description;
-        this.id = Math.random().toString();
+        this.id = id ? id : Math.random().toString();
     }
 
     save(): void {
@@ -41,11 +41,20 @@ export class Product {
                 price: this.price,
                 description: this.description,
                 id: this.id
+            };
+            const existingProductIndex = products.findIndex(prod => prod.id === this.id);
+            if (existingProductIndex !== -1) {
+                const updatedProducts = [...products];
+                updatedProducts[existingProductIndex] = productData;
+                fs.writeFile(filePath, JSON.stringify(updatedProducts), err => {
+                    console.log(err);
+                })
+            } else {
+                products.push(productData);
+                fs.writeFile(filePath, JSON.stringify(products), err => {
+                    console.log(err);
+                })
             }
-            products.push(productData);
-            fs.writeFile(filePath, JSON.stringify(products), err => {
-                console.log(err);
-            })
         })
     }
 

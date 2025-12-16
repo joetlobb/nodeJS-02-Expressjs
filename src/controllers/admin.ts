@@ -6,7 +6,7 @@ export const getAddProduct: IRequestHandler = (req, res, next) => {
     res.render("admin/edit-product", {
         pageTitle: "Add Product",
         path: "/admin/add-product",
-        isEditing: false,
+        editing: false,
     });
 }
 
@@ -42,7 +42,14 @@ export const getEditProduct: IRequestHandler = (req, res, next) => {
 }
 
 export const postEditProduct: IRequestHandler = (req, res, next) => {
-    
+    const prodId = req.body.productId;
+    const updatedTitle = req.body.title;
+    const updatedImageUrl = req.body.imageUrl;
+    const updatedPrice = +req.body.price;
+    const updatedDescription = req.body.description;
+    const updatedProduct = new Product(updatedTitle, updatedImageUrl, updatedPrice, updatedDescription, prodId);
+    updatedProduct.save();
+    res.redirect("/admin/products");
 }
 
 export const getProducts: IRequestHandler = (req, res, next) => {

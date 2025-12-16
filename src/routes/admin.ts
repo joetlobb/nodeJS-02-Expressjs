@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAddProduct, getEditProduct, getProducts, postAddProduct } from "../controllers/admin.ts";
+import { getAddProduct, getEditProduct, getProducts, postAddProduct, postEditProduct } from "../controllers/admin.ts";
 
 const router = Router();
 
@@ -13,5 +13,7 @@ router.get("/products", getProducts);
 router.post("/add-product", postAddProduct);
 
 router.get("/edit-product/:productId", getEditProduct);
+
+router.post("/edit-product", postEditProduct);
 
 export default router;
