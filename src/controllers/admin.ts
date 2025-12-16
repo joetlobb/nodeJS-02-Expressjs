@@ -61,3 +61,12 @@ export const getProducts: IRequestHandler = (req, res, next) => {
         });
     });
 }
+
+export const postDeleteProduct: IRequestHandler = (req, res, next) => {
+    console.log("DELETE POST HIT");
+    const prodId = req.body.productId;
+    if (prodId) {
+        Product.deleteById(prodId);
+        res.redirect("/admin/products");
+    }
+}

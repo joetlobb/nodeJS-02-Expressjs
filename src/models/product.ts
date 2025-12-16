@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import rootDir from "../utils/path.ts";
 import type { IProduct } from "../types/products.ts";
+import { Cart } from "./cart.ts";
 
 export const products: IProduct[] = [];
 
@@ -55,6 +56,18 @@ export class Product {
                     console.log(err);
                 })
             }
+        })
+    }
+
+    static deleteById(id: string): void {
+        getProductsFromFile(products => {
+            const product = products.find(prod => prod.id === id);
+            const updatedProducts = products.filter(prod => prod.id !== id);
+            fs.writeFile(filePath, JSON.stringify(updatedProducts), err => {
+                if (!err && product) {
+                    const cart = Cart.deleteProduct(id, product.price)
+                }
+            })
         })
     }
 
