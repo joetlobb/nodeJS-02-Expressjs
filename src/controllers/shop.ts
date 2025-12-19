@@ -4,23 +4,27 @@ import type { IRequestHandler } from "../types/express-types.ts";
 import type { IProduct } from "../types/products.ts";
 
 export const getProducts: IRequestHandler = (req, res, next) => {
-    Product.fetchAll((products: IProduct[]) => {
-        res.render("shop/product-list", {
-            prods: products,
-            pageTitle: "All Products",
-            path: "/products",
-        });
-    });
+    Product.fetchAll()
+        .then(([products]) => {
+            res.render("shop/product-list", {
+                prods: products,
+                pageTitle: "All Products",
+                path: "/products",
+            })
+        })
+        .catch(err => console.log(err))
 }
 
 export const getIndex: IRequestHandler = (req, res, next) => {
-    Product.fetchAll((products: IProduct[]) => {
-        res.render("shop/index", {
-            prods: products,
-            pageTitle: "Shop",
-            path: "/",
-        });
-    });
+    Product.fetchAll()
+        .then(([products, fieldData]) => {
+            res.render("shop/index", {
+                prods: products,
+                pageTitle: "Shop",
+                path: "/",
+            });
+        })
+        .catch(err => console.log(err));
 }
 
 export const getCart: IRequestHandler = (req, res, next) => {
@@ -33,10 +37,11 @@ export const getCart: IRequestHandler = (req, res, next) => {
                     cartProducts.push({ productData: product, quantity: cartProductData.quantity });
                 }
             }
-            res.render("shop/cart", { 
-                pageTitle: "Your Cart", 
-                path: "/cart", 
-                products: cartProducts });
+            res.render("shop/cart", {
+                pageTitle: "Your Cart",
+                path: "/cart",
+                products: cartProducts
+            });
         });
     })
 }

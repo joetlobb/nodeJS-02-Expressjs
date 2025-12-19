@@ -20,10 +20,6 @@ app.use(express.static(path.join(rootDir, "..", "public")));
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
-db.execute("SELECT * FROM products").then(result => {
-    console.log(result[0], result[1]);
-}).catch(err => console.log(err));
-
 app.use(get404);
 
 app.listen(3000);
