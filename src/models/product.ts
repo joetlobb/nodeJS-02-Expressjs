@@ -18,8 +18,10 @@ export class Product {
         this.id = id ? id : Math.random().toString();
     }
 
-    save(): void {
-        
+    save() {
+        return db.execute('INSERT INTO products (title, price, description, url) VALUES (?, ?, ?, ?)',
+            [this.title, this.price, this.description, this.imageUrl]
+        );
     }
 
     static deleteById(id: string): void {
@@ -30,7 +32,7 @@ export class Product {
         return db.execute('SELECT * FROM products')
     }
 
-    static findById(id: string, callback: (product: IProduct) => void) {
-
+    static findById(id: string) {
+        return db.execute<IProduct[]>('SELECT * FROM products WHERE products.id = ?', [id])
     }
 }
