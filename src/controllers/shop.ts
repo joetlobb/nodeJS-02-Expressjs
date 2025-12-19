@@ -67,13 +67,20 @@ export const postCartDeleteProduct: IRequestHandler = (req, res, next) => {
 export const getProduct: IRequestHandler = (req, res, next) => {
     const prodId = req.params.productId;
     if (prodId) {
-        Product.findById(prodId, (product: IProduct) => {
-            res.render("shop/product-detail", {
-                pageTitle: product.title,
-                path: "/products",
-                product: product
+        Product.findById(prodId)
+            .then(([rows]) => {
+                const product = rows[0];
+                if (product) {
+                    res.render("shop/product-detail", {
+                        pageTitle: product.title,
+                        path: "/products",
+                        product: product
+                    })
+                } else {
+                    res.redirect('/products');
+                }
             })
-        });
+            .catch(err => console.log(err))
     } else {
         res.redirect('/products');
     }
