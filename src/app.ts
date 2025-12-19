@@ -7,6 +7,7 @@ import rootDir from "./utils/path.ts";
 import adminRoutes from "./routes/admin.ts";
 import shopRoutes from "./routes/shop.ts";
 import { get404 } from "./controllers/error.ts";
+import db from "./utils/database.ts";
 
 const app = express();
 
@@ -18,6 +19,10 @@ app.use(express.static(path.join(rootDir, "..", "public")));
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
+
+db.execute("SELECT * FROM products").then(result => {
+    console.log(result[0], result[1]);
+}).catch(err => console.log(err));
 
 app.use(get404);
 
