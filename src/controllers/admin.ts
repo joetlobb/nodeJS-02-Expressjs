@@ -34,17 +34,23 @@ export const getEditProduct: IRequestHandler = (req, res, next) => {
     };
     const prodId = req.params.productId;
     if (prodId) {
-        Product.findById(prodId, (product: IProduct) => {
-            if (!product) {
-                return res.redirect("/");
-            };
-            res.render("admin/edit-product", {
-                pageTitle: "Edit Product",
-                path: "/admin/edit-product",
-                editing: editMode,
-                product: product,
-            });
-        });
+        Product.findByPk(prodId)
+            .then(prod => {
+                if (prod) {
+                    const product = prod as IProduct;
+                    res.render("admin/edit-product", {
+                        pageTitle: "Edit Product",
+                        path: "/admin/edit-product",
+                        editing: editMode,
+                        product: product,
+                    });
+                } else {
+                    res.redirect("/");
+                }
+            })
+            .catch(err => console.log(err));
+    } else {
+        res.redirect("/");
     }
 }
 
@@ -54,26 +60,55 @@ export const postEditProduct: IRequestHandler = (req, res, next) => {
     const updatedImageUrl = req.body.imageUrl;
     const updatedPrice = +req.body.price;
     const updatedDescription = req.body.description;
-    const updatedProduct = new Product(updatedTitle, updatedImageUrl, updatedPrice, updatedDescription, prodId);
-    updatedProduct.save();
-    res.redirect("/admin/products");
+    Product.findByPk(prodId)
+        .then(prod => {
+            if (!prod) {
+                res.redirect("/admin/products");
+            } else {
+                const product = prod as IProduct;
+                product.title = updatedTitle;
+                product.imageUrl = updatedImageUrl;
+                product.price = updatedPrice;
+                product.description = updatedDescription;
+                return product.save();
+            }
+        })
+        .then(result => {
+            console.log('Updated product');
+            res.redirect("/admin/products");
+        })
+        .catch(err => console.log(err));
 }
 
 export const getProducts: IRequestHandler = (req, res, next) => {
-    Product.fetchAll((products: IProduct[]) => {
-        res.render("admin/products", {
-            prods: products,
-            pageTitle: "Admin Products",
-            path: "/admin/products",
-        });
-    });
+    Product.findAll()
+        .then(prods => {
+            const products = prods as IProduct[];
+            res.render("admin/products", {
+                prods: products,
+                pageTitle: "Admin Products",
+                path: "/admin/products",
+            });
+        })
+        .catch(err => console.log(err));
 }
 
 export const postDeleteProduct: IRequestHandler = (req, res, next) => {
-    console.log("DELETE POST HIT");
     const prodId = req.body.productId;
-    if (prodId) {
-        Product.deleteById(prodId);
+    if (!prodId) {
         res.redirect("/admin/products");
     }
+    Product.findByPk(prodId)
+        .then(product => {
+            if (product) {
+                return product.destroy();
+            } else {
+                res.redirect("/admin/products");
+            }
+        })
+        .then(result => {
+            console.log('Deleted product');
+            res.redirect("/admin/products");
+        })
+        .catch(err => console.log(err))
 }
