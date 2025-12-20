@@ -1,6 +1,6 @@
-import type { RowDataPacket } from "mysql2";
+import { Model } from 'sequelize';
 
-export interface IProduct extends RowDataPacket {
+export interface IProduct extends Model {
   title: string;
   imageUrl: string;
   price: number;
