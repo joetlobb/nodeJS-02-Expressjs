@@ -7,7 +7,8 @@ import rootDir from "./utils/path.ts";
 import adminRoutes from "./routes/admin.ts";
 import shopRoutes from "./routes/shop.ts";
 import { get404 } from "./controllers/error.ts";
-import db from "./utils/database.ts";
+import sequelize from "./utils/database.ts";
+import Product from "./models/product.ts";
 
 const app = express();
 
@@ -22,4 +23,11 @@ app.use(shopRoutes);
 
 app.use(get404);
 
-app.listen(3000);
+sequelize
+    .sync()
+    .then((result) => {
+        console.log(result);
+        app.listen(3000);
+    })
+    .catch(err => console.log(err));
+

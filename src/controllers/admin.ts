@@ -1,4 +1,3 @@
-import { Product } from "../models/product.ts";
 import type { IRequestHandler } from "../types/express-types.ts";
 import type { IProduct } from "../types/products.ts";
 
