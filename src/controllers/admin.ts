@@ -15,7 +15,7 @@ export const postAddProduct: IRequestHandler = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const price = +req.body.price;
     const description = req.body.description;
-    Product.create({
+    req.user.createProduct({
         title: title,
         imageUrl: imageUrl,
         price: price,
@@ -24,7 +24,10 @@ export const postAddProduct: IRequestHandler = (req, res, next) => {
         .then(() => {
             res.redirect("/");
         })
-        .catch(err => console.log(err));
+        .catch((err: Error) => {
+            console.log(err);
+            res.redirect("/");
+        });
 }
 
 export const getEditProduct: IRequestHandler = (req, res, next) => {

@@ -33,7 +33,7 @@ app.use(shopRoutes);
 
 app.use(get404);
 
-Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE', foreignKey: { allowNull: false } });
 User.hasMany(Product);
 
 sequelize
