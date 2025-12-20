@@ -9,6 +9,7 @@ import shopRoutes from "./routes/shop.ts";
 import { get404 } from "./controllers/error.ts";
 import sequelize from "./utils/database.ts";
 import Product from "./models/product.ts";
+import User from "./models/user.ts";
 
 const app = express();
 
@@ -23,8 +24,13 @@ app.use(shopRoutes);
 
 app.use(get404);
 
+Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+User.hasMany(Product);
+
 sequelize
-    .sync()
+    .sync(
+        // { force: true }
+    )
     .then((result) => {
         console.log(result);
         app.listen(3000);
