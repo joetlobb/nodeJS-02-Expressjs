@@ -1,4 +1,4 @@
-import type { IRequestHandler } from "../types/express-types.ts";
+import type { IRequestHandler } from "../types/requestHandler.ts";
 
 export const get404: IRequestHandler = (req, res, next) => {
     res.status(404).render("404", {
