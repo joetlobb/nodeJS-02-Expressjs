@@ -1,5 +1,12 @@
 import { Router } from "express";
-import { getAddProduct, getEditProduct, getProducts, postAddProduct, postDeleteProduct, postEditProduct } from "../controllers/admin.ts";
+import {
+  getAddProduct,
+  getEditProduct,
+  getProducts,
+  postAddProduct,
+  postDeleteProduct,
+  postEditProduct,
+} from "../controllers/admin.ts";
 
 const router = Router();
 
