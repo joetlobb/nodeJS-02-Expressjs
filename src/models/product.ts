@@ -8,21 +8,22 @@ class Product {
     private price: number;
     private description: string;
     private imageUrl: string;
+    private userId: ObjectId;
 
     constructor(
         title: string,
         price: number,
         description: string,
         imageUrl: string,
-        id?: ObjectId
+        userId: ObjectId,
+        id?: ObjectId,
     ) {
         this.title = title;
         this.price = price;
         this.description = description;
         this.imageUrl = imageUrl;
-        if (id) {
-            this._id = id;
-        }
+        this.userId = userId;
+        if (id) this._id = id;
     }
 
     save() {
@@ -34,6 +35,7 @@ class Product {
             price: this.price,
             description: this.description,
             imageUrl: this.imageUrl,
+            userId: this.userId
         };
 
         // If we have an _id (updating existing product), add it to the object

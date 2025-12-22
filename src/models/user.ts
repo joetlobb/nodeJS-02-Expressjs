@@ -1,54 +1,32 @@
-import { 
-  DataTypes, 
-  Model, 
-  type InferAttributes, 
-  type InferCreationAttributes, 
-  type CreationOptional,
-  type HasOneCreateAssociationMixin,
-  type HasOneGetAssociationMixin,
-  type HasManyGetAssociationsMixin,
-  type HasManyCreateAssociationMixin,
-} from "sequelize";
-import sequelize from "../utils/database.js";
-import Cart from "./cart.ts";
-import type Product from "./product.ts";
-import type Order from "./order.ts";
+import { ObjectId } from "mongodb";
+import { getDb } from "../utils/database.ts";
 
-export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-  declare id: CreationOptional<number>;
-  declare name: string;
-  declare email: string;
+class User {
+  private name: string;
+  private email: string;
+  private _id?: ObjectId;
 
-  // These tell TypeScript that Sequelize magic methods exist
-  declare createCart: HasOneCreateAssociationMixin<Cart>;
-  declare getCart: HasOneGetAssociationMixin<Cart>;
-  declare getProducts: HasManyGetAssociationsMixin<Product>;
-  declare createProduct: HasOneCreateAssociationMixin<Product>;
-  declare createOrder: HasManyCreateAssociationMixin<Order>;
-  declare getOrders: HasManyGetAssociationsMixin<Order>;
-}
-
-User.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false
-    }
-  },
-  { 
-    sequelize, 
-    modelName: 'user' 
+  constructor(name: string, email: string, id?: ObjectId) {
+    this.name = name;
+    this.email = email;
+    if (id) this._id = id;
   }
-);
+
+  public getUserId = () => this._id;
+
+  save() {
+    const db = getDb();
+    const userData = {
+      name: this.name,
+      email: this.email
+    }
+    return db.collection('users').insertOne(userData)
+  }
+
+  static findById(id: string) {
+    const db = getDb();
+    return db.collection('users').findOne({ _id: new ObjectId(id) });
+  }
+}
 
 export default User;

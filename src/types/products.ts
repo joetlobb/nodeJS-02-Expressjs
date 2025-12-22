@@ -6,4 +6,5 @@ export interface IProduct {
     price: number;
     description: string;
     imageUrl: string;
+    userId: ObjectId;
 }

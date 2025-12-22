@@ -15,16 +15,20 @@ export const postAddProduct: IRequestHandler = (req, res, next) => {
     const price = +req.body.price;
     const description = req.body.description;
     const imageUrl = req.body.imageUrl;
-    const product = new Product(title, price, description, imageUrl);
+    const user = req.user;
+    const userId = user?.getUserId(); // This could be undefined
+    if (!user || !userId) {
+        // If there's no user or ID, we shouldn't even try to save
+        return res.redirect("/");
+    }
+    const product = new Product(title, price, description, imageUrl, userId);
     product.save()
         .then(() => {
             res.redirect("/");
         })
         .catch((err: Error) => {
             console.log(err);
-            res.redirect("/");
         });
-
 }
 
 export const getEditProduct: IRequestHandler = (req, res, next) => {
