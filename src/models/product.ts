@@ -7,6 +7,7 @@ import {
 } from "sequelize";
 import sequelize from "../utils/database.js";
 import type CartItem from "./cart-item.ts";
+import type OrderItem from "./order-item.ts";
 
 export class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
     declare id: CreationOptional<number>;
@@ -16,6 +17,7 @@ export class Product extends Model<InferAttributes<Product>, InferCreationAttrib
     declare description: string;
 
     declare cartItem?: CartItem
+    declare orderItem?: { quantity: number } | OrderItem;
 }
 
 Product.init({

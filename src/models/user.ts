@@ -7,10 +7,12 @@ import {
   type HasOneCreateAssociationMixin,
   type HasOneGetAssociationMixin,
   type HasManyGetAssociationsMixin,
+  type HasManyCreateAssociationMixin,
 } from "sequelize";
 import sequelize from "../utils/database.js";
 import Cart from "./cart.ts";
 import type Product from "./product.ts";
+import type Order from "./order.ts";
 
 export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>;
@@ -22,6 +24,8 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   declare getCart: HasOneGetAssociationMixin<Cart>;
   declare getProducts: HasManyGetAssociationsMixin<Product>;
   declare createProduct: HasOneCreateAssociationMixin<Product>;
+  declare createOrder: HasManyCreateAssociationMixin<Order>;
+  declare getOrders: HasManyGetAssociationsMixin<Order>;
 }
 
 User.init(

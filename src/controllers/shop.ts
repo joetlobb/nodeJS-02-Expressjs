@@ -1,7 +1,6 @@
 // import { Cart } from "../models/cart.ts";
 import Product from "../models/product.ts";
 import type { IRequestHandler } from "../types/requestHandler.ts";
-import type { IProduct } from "../types/products.ts";
 import type Cart from "../models/cart.ts";
 
 export const getProducts: IRequestHandler = (req, res, next) => {
@@ -147,8 +146,49 @@ export const getProduct: IRequestHandler = (req, res, next) => {
     }
 }
 
+export const postOrder: IRequestHandler = (req, res, next) => {
+    const user = req.user;
+    let fetchedCart: Cart;
+    if (user) {
+        user.getCart()
+            .then(cart => {
+                fetchedCart = cart;
+                return cart.getProducts()
+            })
+            .then(async products => {
+                try {
+                    const order = await user.createOrder();
+                    return await order.addProducts(products.map(product => {
+                        product.orderItem = {
+                            quantity: product.cartItem?.quantity ?? 1
+                        };
+                        return product;
+                    }));
+                } catch (err) {
+                    console.log(err);
+                }
+            })
+            .then(() => {
+                return fetchedCart.setProducts([]);
+            })
+            .then(() => {
+                res.redirect('/orders')
+            })
+            .catch((err: Error) => { console.log(err) })
+    }
+}
+
 export const getOrders: IRequestHandler = (req, res, next) => {
-    res.render("shop/orders", { pageTitle: "Your Orders", path: "/orders" });
+    const user = req.user;
+    user?.getOrders({ include: ['products'] })
+        .then(orders => {
+            res.render("shop/orders", {
+                pageTitle: "Your Orders",
+                path: "/orders",
+                orders: orders
+            });
+        })
+        .catch((err: Error) => { console.log(err) })
 }
 
 export const getCheckout: IRequestHandler = (req, res, next) => {
