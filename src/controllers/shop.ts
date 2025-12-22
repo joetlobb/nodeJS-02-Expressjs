@@ -28,22 +28,24 @@ export const getIndex: IRequestHandler = (req, res, next) => {
 }
 
 export const getCart: IRequestHandler = (req, res, next) => {
-    Cart.getCart((cart) => {
-        // Product.fetchAll((products: IProduct[]) => {
-        //     const cartProducts: { productData: IProduct, quantity: number }[] = [];
-        //     for (let product of products) {
-        //         const cartProductData = cart.products.find(prod => prod.id === product.id);
-        //         if (cartProductData) {
-        //             cartProducts.push({ productData: product, quantity: cartProductData.quantity });
-        //         }
-        //     }
-        //     res.render("shop/cart", {
-        //         pageTitle: "Your Cart",
-        //         path: "/cart",
-        //         products: cartProducts
-        //     });
-        // });
-    })
+    const user = req.user;
+    if (user) {
+        user.getCart()
+            .then((cart) => {
+                cart.getProducts()
+                    .then(products => {
+                        res.render("shop/cart", {
+                            pageTitle: "Your Cart",
+                            path: "/cart",
+                            products: products
+                        });
+                    })
+                    .catch((err: Error) => { console.log(err) })
+            })
+            .catch((err: Error) => { console.log(err) })
+    } else {
+        res.redirect("/");
+    }
 }
 
 export const postCart: IRequestHandler = (req, res, next) => {
@@ -81,7 +83,7 @@ export const getProduct: IRequestHandler = (req, res, next) => {
                     res.redirect('/products');
                 }
             })
-            .catch(err => console.log(err));                
+            .catch(err => console.log(err));
         // // Using findByPk
         // Product.findByPk(prodId)
         //     .then(prod => {

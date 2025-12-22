@@ -1,21 +1,50 @@
-import { DataTypes, Model } from "sequelize";
-import sequelize from "../utils/database.ts";
+import { 
+  DataTypes, 
+  Model, 
+  type InferAttributes, 
+  type InferCreationAttributes, 
+  type CreationOptional,
+  type HasOneCreateAssociationMixin,
+  type HasOneGetAssociationMixin,
+  type HasManyGetAssociationsMixin,
+} from "sequelize";
+import sequelize from "../utils/database.js";
+import Cart from "./cart.ts";
+import type Product from "./product.ts";
 
-const User = sequelize.define('user', {
+export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  declare id: CreationOptional<number>;
+  declare name: string;
+  declare email: string;
+
+  // These tell TypeScript that Sequelize magic methods exist
+  declare createCart: HasOneCreateAssociationMixin<Cart>;
+  declare getCart: HasOneGetAssociationMixin<Cart>;
+  declare getProducts: HasManyGetAssociationsMixin<Product>;
+  declare createProduct: HasOneCreateAssociationMixin<Product>;
+}
+
+User.init(
+  {
     id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false
     },
     name: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false
     },
     email: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false
     }
-});
+  },
+  { 
+    sequelize, 
+    modelName: 'user' 
+  }
+);
 
 export default User;

@@ -1,7 +1,21 @@
-import { DataTypes } from "sequelize";
-import sequelize from "../utils/database.ts";
+import {
+    DataTypes,
+    Model,
+    type InferAttributes,
+    type InferCreationAttributes,
+    type CreationOptional
+} from "sequelize";
+import sequelize from "../utils/database.js";
 
-const Product = sequelize.define("product", {
+export class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
+    declare id: CreationOptional<number>;
+    declare title: string;
+    declare price: number;
+    declare imageUrl: string;
+    declare description: string;
+}
+
+Product.init({
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -24,6 +38,11 @@ const Product = sequelize.define("product", {
         type: DataTypes.TEXT,
         allowNull: false
     }
-}); 
+},
+    {
+        sequelize,
+        modelName: 'product'
+    }
+);
 
 export default Product;

@@ -1,7 +1,18 @@
-import { DataTypes } from "sequelize";
+import {
+    DataTypes,
+    Model,
+    type CreationOptional,
+    type InferAttributes,
+    type InferCreationAttributes
+} from "sequelize";
 import sequelize from "../utils/database.ts";
 
-const CartItem = sequelize.define('cartItem', {
+export class CartItem extends Model<InferAttributes<CartItem>, InferCreationAttributes<CartItem>> {
+    declare id: CreationOptional<number>;
+    declare quantity: number;
+}
+
+CartItem.init({
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -12,6 +23,9 @@ const CartItem = sequelize.define('cartItem', {
         type: DataTypes.INTEGER,
         allowNull: false
     }
+}, {
+    sequelize,
+    modelName: 'cartItem'
 });
 
 export default CartItem;

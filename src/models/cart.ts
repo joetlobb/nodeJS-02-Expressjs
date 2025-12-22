@@ -1,13 +1,33 @@
-import { DataTypes } from "sequelize";
-import sequelize from "../utils/database.ts";
+import { 
+  DataTypes, 
+  Model, 
+  type InferAttributes, 
+  type InferCreationAttributes, 
+  type CreationOptional, 
+  type HasManyGetAssociationsMixin
+} from "sequelize";
+import sequelize from "../utils/database.js"; // Note: .js for ESM compatibility
+import type Product from "./product.ts";
 
-const Cart = sequelize.define('cart', {
+export class Cart extends Model<InferAttributes<Cart>, InferCreationAttributes<Cart>> {
+  declare id: CreationOptional<number>;
+
+  declare getProducts: HasManyGetAssociationsMixin<Product>;
+}
+
+Cart.init(
+  {
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true
     }
-});
+  },
+  { 
+    sequelize, 
+    modelName: 'cart' 
+  }
+);
 
 export default Cart;

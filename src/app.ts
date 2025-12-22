@@ -24,8 +24,10 @@ app.use(express.static(path.join(rootDir, "..", "public")));
 app.use((req, res, next) => {
     User.findByPk(1)
         .then(user => {
-            req.user = user;
-            next();
+            if (user) {
+                req.user = user;
+                next();
+            }
         })
         .catch(err => console.log(err));
 });
@@ -55,9 +57,17 @@ sequelize
         }
         return Promise.resolve(user);
     })
-    .then(user => {
-        console.log(user);
+    .then(async (user) => {
+    const existingCart = await user.getCart();
+    
+    if (!existingCart) {
+        return user.createCart();
+    }
+    return existingCart;
+})
+    .then(cart => {
         app.listen(3000);
-    })
+    }
+    )
     .catch(err => console.log(err));
 
