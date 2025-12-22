@@ -2,6 +2,7 @@
 import Product from "../models/product.ts";
 import type { IRequestHandler } from "../types/requestHandler.ts";
 import type { IProduct } from "../types/products.ts";
+import type Cart from "../models/cart.ts";
 
 export const getProducts: IRequestHandler = (req, res, next) => {
     Product.findAll()
@@ -49,11 +50,40 @@ export const getCart: IRequestHandler = (req, res, next) => {
 }
 
 export const postCart: IRequestHandler = (req, res, next) => {
-    // const prodId: string = req.body.productId;
-    // Product.findById(prodId, (product: IProduct) => {
-    //     Cart.addProduct(prodId, product.price);
-    // });
-    // res.redirect("/cart")
+    const prodId = req.body.productId;
+    const user = req.user;
+    let fetchedCart: Cart;
+    let newQuantity = 1;
+    if (user && prodId) {
+        user.getCart()
+            .then(cart => {
+                fetchedCart = cart;
+                return cart.getProducts({ where: { id: prodId } })
+            })
+            .then(products => {
+                let product;
+                if (products.length > 0) {
+                    product = products[0];
+                }
+                if (product && product.cartItem) {
+                    const oldQuantity = product.cartItem.quantity;
+                    newQuantity = oldQuantity + 1;
+                    return product
+                }
+                return Product.findByPk(prodId)
+            })
+            .then(product => {
+                if (product) {
+                    return fetchedCart.addProduct(product, {
+                        through: { quantity: newQuantity }
+                    })
+                }
+            })
+            .then(() => {
+                res.redirect("/cart")
+            })
+            .catch((err: Error) => { console.log(err) })
+    }
 }
 
 export const postCartDeleteProduct: IRequestHandler = (req, res, next) => {

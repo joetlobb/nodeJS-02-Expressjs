@@ -4,7 +4,8 @@ import {
   type InferAttributes, 
   type InferCreationAttributes, 
   type CreationOptional, 
-  type HasManyGetAssociationsMixin
+  type BelongsToManyGetAssociationsMixin,
+  type BelongsToManyAddAssociationMixin
 } from "sequelize";
 import sequelize from "../utils/database.js"; // Note: .js for ESM compatibility
 import type Product from "./product.ts";
@@ -12,7 +13,8 @@ import type Product from "./product.ts";
 export class Cart extends Model<InferAttributes<Cart>, InferCreationAttributes<Cart>> {
   declare id: CreationOptional<number>;
 
-  declare getProducts: HasManyGetAssociationsMixin<Product>;
+  declare getProducts: BelongsToManyGetAssociationsMixin<Product>;
+  declare addProduct: BelongsToManyAddAssociationMixin<Product, number>;
 }
 
 Cart.init(
