@@ -1,11 +1,10 @@
-import type { IProduct } from "./products.ts";
+import type { ObjectId } from "mongodb";
 
-export interface ICartProduct {
-    id: string;
-    quantity: number;
+export interface ICartItem {
+  productId: ObjectId;
+  quantity: number;
 }
 
 export interface ICart {
-    products: ICartProduct[];
-    totalPrice: number;
+  items: ICartItem[];
 }
