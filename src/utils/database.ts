@@ -1,20 +1,30 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 import dotenv from 'dotenv';
 
 dotenv.config();
-
 const dbUrl = process.env.DB_URL;
 
-const mongoConnect = (callback: (client: MongoClient) => void) => {
+let _db: Db;
+
+export const mongoConnect = (callback: () => void) => {
     if (dbUrl) {
         MongoClient.connect(dbUrl)
             .then(client => {
-                callback(client)
+                console.log('Connected!');
+                _db = client.db();
+                callback();
             })
             .catch(err => {
                 console.log(err)
+                throw err;
             })
     }
 }
 
-export default mongoConnect;
+export const getDb = () => {
+    if (_db) {
+        return _db;
+    }
+    throw 'No database found!';
+}
+

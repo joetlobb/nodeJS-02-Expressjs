@@ -1,53 +1,21 @@
-// import {
-//     DataTypes,
-//     Model,
-//     type InferAttributes,
-//     type InferCreationAttributes,
-//     type CreationOptional
-// } from "sequelize";
-// import sequelize from "../utils/database.js";
-// import type CartItem from "./cart-item.ts";
-// import type OrderItem from "./order-item.ts";
+import { getDb } from "../utils/database.ts";
 
-// export class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
-//     declare id: CreationOptional<number>;
-//     declare title: string;
-//     declare price: number;
-//     declare imageUrl: string;
-//     declare description: string;
+class Product {
+    private title: string;
+    private price: number;
+    private description: string;
+    private imageUrl: string;
 
-//     declare cartItem?: CartItem
-//     declare orderItem?: { quantity: number } | OrderItem;
-// }
+    constructor(title: string, price: number, description: string, imageUrl: string) {
+        this.title = title;
+        this.price = price;
+        this.description = description;
+        this.imageUrl = imageUrl;
+    }
 
-// Product.init({
-//     id: {
-//         type: DataTypes.INTEGER,
-//         autoIncrement: true,
-//         allowNull: false,
-//         primaryKey: true
-//     },
-//     title: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     price: {
-//         type: DataTypes.DOUBLE,
-//         allowNull: false
-//     },
-//     imageUrl: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     description: {
-//         type: DataTypes.TEXT,
-//         allowNull: false
-//     }
-// },
-//     {
-//         sequelize,
-//         modelName: 'product'
-//     }
-// );
+    save() {
+        
+    }
+}
 
-// export default Product;
+export default Product;

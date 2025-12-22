@@ -7,7 +7,7 @@ import rootDir from "./utils/path.ts";
 import adminRoutes from "./routes/admin.ts";
 import shopRoutes from "./routes/shop.ts";
 import { get404 } from "./controllers/error.ts";
-import mongoConnect from "./utils/database.ts";
+import { mongoConnect } from "./utils/database.ts";
 
 const app = express();
 
@@ -33,7 +33,6 @@ app.use((req, res, next) => {
 
 app.use(get404);
 
-mongoConnect((client) => {
-    console.log(client)
+mongoConnect(() => {
     app.listen(3000);
 })
