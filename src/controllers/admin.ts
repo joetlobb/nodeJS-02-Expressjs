@@ -36,11 +36,12 @@ export const getEditProduct: IRequestHandler = (req, res, next) => {
         return res.redirect("/");
     };
     const prodId = req.params.productId;
-    if (prodId) {
-        Product.findByPk(prodId)
-            .then(prod => {
-                if (prod) {
-                    const product = prod as IProduct;
+    const user = req.user;
+    if (user && prodId) {
+        user.getProducts({ where: { id: prodId } })
+            .then((products: IProduct[]) => {
+                if (products) {
+                    const product = products[0] as IProduct;
                     res.render("admin/edit-product", {
                         pageTitle: "Edit Product",
                         path: "/admin/edit-product",
@@ -51,7 +52,7 @@ export const getEditProduct: IRequestHandler = (req, res, next) => {
                     res.redirect("/");
                 }
             })
-            .catch(err => console.log(err));
+            .catch((err: Error) => {console.log(err)});
     } else {
         res.redirect("/");
     }
@@ -80,20 +81,24 @@ export const postEditProduct: IRequestHandler = (req, res, next) => {
             console.log('Updated product');
             res.redirect("/admin/products");
         })
-        .catch(err => console.log(err));
+        .catch(err => {console.log(err)});
 }
 
 export const getProducts: IRequestHandler = (req, res, next) => {
-    Product.findAll()
-        .then(prods => {
-            const products = prods as IProduct[];
-            res.render("admin/products", {
-                prods: products,
-                pageTitle: "Admin Products",
-                path: "/admin/products",
-            });
-        })
-        .catch(err => console.log(err));
+    const user = req.user;
+    if (user) {
+        user.getProducts()
+            .then((products: IProduct[]) => {
+                res.render("admin/products", {
+                    prods: products,
+                    pageTitle: "Admin Products",
+                    path: "/admin/products",
+                });
+            })
+            .catch((err: Error) => {console.log(err)});
+    } else {
+        res.redirect("/admin/products");
+    }
 }
 
 export const postDeleteProduct: IRequestHandler = (req, res, next) => {
@@ -113,5 +118,5 @@ export const postDeleteProduct: IRequestHandler = (req, res, next) => {
             console.log('Deleted product');
             res.redirect("/admin/products");
         })
-        .catch(err => console.log(err))
+        .catch(err => {console.log(err)})
 }
