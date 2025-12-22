@@ -9,15 +9,25 @@ class Product {
     private description: string;
     private imageUrl: string;
 
-    constructor(title: string, price: number, description: string, imageUrl: string) {
+    constructor(
+        title: string,
+        price: number,
+        description: string,
+        imageUrl: string,
+        id?: ObjectId
+    ) {
         this.title = title;
         this.price = price;
         this.description = description;
         this.imageUrl = imageUrl;
+        if (id) {
+            this._id = id;
+        }
     }
 
     save() {
         const db = getDb();
+        let dbOp;
         // db.collection('products').insertMany([]);
         const productData: IProduct = {
             title: this.title,
@@ -28,10 +38,16 @@ class Product {
 
         // If we have an _id (updating existing product), add it to the object
         if (this._id) {
-            productData._id = this._id;
+            dbOp = db.collection('products')
+                .updateOne(
+                    { _id: this._id },
+                    { $set: productData }
+                )
+        } else {
+            dbOp = db.collection('products').insertOne(productData);
         }
 
-        return db.collection('products').insertOne(productData)
+        return dbOp
             .then(result => {
                 console.log(result)
             })
@@ -58,7 +74,6 @@ class Product {
         }
         return db.collection('products').find({ _id: new ObjectId(id) }).next()
             .then(product => {
-                console.log(product)
                 return product;
             })
             .catch(err => { console.log(err) });
