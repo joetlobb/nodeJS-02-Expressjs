@@ -10,6 +10,8 @@ import { get404 } from "./controllers/error.ts";
 import sequelize from "./utils/database.ts";
 import Product from "./models/product.ts";
 import User from "./models/user.ts";
+import Cart from "./models/cart.ts";
+import CartItem from "./models/cart-item.ts";
 
 const app = express();
 
@@ -35,6 +37,10 @@ app.use(get404);
 
 Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE', foreignKey: { allowNull: false } });
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 sequelize
     .sync(
