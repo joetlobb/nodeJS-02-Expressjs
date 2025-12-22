@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "../utils/database.ts";
-import type { ICart } from "../types/cart.ts";
+import type { ICart, ICartItem } from "../types/cart.ts";
 import type { IProduct } from "../types/products.ts";
 
 class User {
@@ -47,7 +47,10 @@ class User {
       const currentItem = updatedCartItems[cartItemIdx];
       if (currentItem) {
         newQuantity = currentItem.quantity + 1;
-        updatedCartItems[cartItemIdx] = { ...currentItem, quantity: newQuantity }
+        updatedCartItems[cartItemIdx] = {
+          ...currentItem,
+          quantity: newQuantity,
+        };
       }
     } else {
       updatedCartItems.push({
@@ -57,13 +60,41 @@ class User {
     }
 
     const updatedCart = {
-      items: updatedCartItems
+      items: updatedCartItems,
     };
 
     const db = getDb();
     return db
       .collection("users")
       .updateOne({ _id: this._id }, { $set: { cart: updatedCart } });
+  }
+
+  getCart() {
+    const db = getDb();
+    if (!this.cart) return;
+    const productIds = this.cart?.items.map((item) => item.productId);
+    return db
+      .collection("products")
+      .find({ _id: { $in: productIds } })
+      .toArray()
+      .then((products) => {
+        const cart = this.cart!;
+        let cartItems: ICartItem[] = [];
+        if (cart.items) {
+          cartItems = cart.items;
+        }
+        return products.map((product) => {
+          return {
+            ...product,
+            quantity: cartItems.find((p) => {
+              return p.productId.toString() === product._id.toString();
+            })?.quantity,
+          };
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   static findById(id: string) {

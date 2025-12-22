@@ -31,24 +31,22 @@ export const getIndex: IRequestHandler = (req, res, next) => {
 };
 
 export const getCart: IRequestHandler = (req, res, next) => {
-  // const user = req.user;
-  // if (user) {
-  //     user.getCart()
-  //         .then((cart) => {
-  //             cart.getProducts()
-  //                 .then(products => {
-  //                     res.render("shop/cart", {
-  //                         pageTitle: "Your Cart",
-  //                         path: "/cart",
-  //                         products: products
-  //                     });
-  //                 })
-  //                 .catch((err: Error) => { console.log(err) })
-  //         })
-  //         .catch((err: Error) => { console.log(err) })
-  // } else {
-  //     res.redirect("/");
-  // }
+  const user = req.user;
+  if (!user) {
+    return res.redirect("/");
+  }
+  user
+    .getCart()!
+    .then((products) => {
+      res.render("shop/cart", {
+        pageTitle: "Your Cart",
+        path: "/cart",
+        products: products,
+      });
+    })
+    .catch((err: Error) => {
+      console.log(err);
+    });
 };
 
 export const postCart: IRequestHandler = (req, res, next) => {
@@ -65,6 +63,7 @@ export const postCart: IRequestHandler = (req, res, next) => {
     })
     .then((result) => {
       console.log(result);
+      res.redirect("/cart");
     })
     .catch((err) => {
       console.log(err);
@@ -178,19 +177,19 @@ export const postOrder: IRequestHandler = (req, res, next) => {
 };
 
 export const getOrders: IRequestHandler = (req, res, next) => {
-//   const user = req.user;
-//   user
-//     ?.getOrders({ include: ["products"] })
-//     .then((orders) => {
-//       res.render("shop/orders", {
-//         pageTitle: "Your Orders",
-//         path: "/orders",
-//         orders: orders,
-//       });
-//     })
-//     .catch((err: Error) => {
-//       console.log(err);
-//     });
+  //   const user = req.user;
+  //   user
+  //     ?.getOrders({ include: ["products"] })
+  //     .then((orders) => {
+  //       res.render("shop/orders", {
+  //         pageTitle: "Your Orders",
+  //         path: "/orders",
+  //         orders: orders,
+  //       });
+  //     })
+  //     .catch((err: Error) => {
+  //       console.log(err);
+  //     });
 };
 
 export const getCheckout: IRequestHandler = (req, res, next) => {
