@@ -78,6 +78,16 @@ class Product {
             })
             .catch(err => { console.log(err) });
     }
+
+    static deleteById(id: string) {
+        const db = getDb();
+        return db.collection('products')
+            .deleteOne({ _id: new ObjectId(id) })
+            .then(result => {
+                console.log('Deleted')
+            })
+            .catch(err => { console.log(err) });
+    }
 }
 
 export default Product;

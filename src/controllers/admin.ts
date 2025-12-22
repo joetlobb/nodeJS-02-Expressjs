@@ -91,22 +91,15 @@ export const getProducts: IRequestHandler = (req, res, next) => {
         .catch((err: Error) => { console.log(err) });
 }
 
-// export const postDeleteProduct: IRequestHandler = (req, res, next) => {
-//     const prodId = req.body.productId;
-//     if (!prodId) {
-//         res.redirect("/admin/products");
-//     }
-//     Product.findByPk(prodId)
-//         .then(product => {
-//             if (product) {
-//                 return product.destroy();
-//             } else {
-//                 res.redirect("/admin/products");
-//             }
-//         })
-//         .then(result => {
-//             console.log('Deleted product');
-//             res.redirect("/admin/products");
-//         })
-//         .catch(err => {console.log(err)})
-// }
+export const postDeleteProduct: IRequestHandler = (req, res, next) => {
+    const prodId = req.body.productId;
+    if (!prodId) {
+        res.redirect("/admin/products");
+    }
+    Product.deleteById(prodId)
+        .then(result => {
+            console.log('Deleted product');
+            res.redirect("/admin/products");
+        })
+        .catch(err => { console.log(err) })
+}
