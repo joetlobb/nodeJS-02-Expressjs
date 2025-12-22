@@ -1,10 +1,9 @@
-// import { Cart } from "../models/cart.ts";
-// import Product from "../models/product.ts";
+import Product from "../models/product.ts";
 import type { IRequestHandler } from "../types/requestHandler.ts";
 import type Cart from "../models/cart.ts";
 
 export const getProducts: IRequestHandler = (req, res, next) => {
-    Product.findAll()
+    Product.fetchAll()
         .then((products) => {
             res.render("shop/product-list", {
                 prods: products,
@@ -16,7 +15,7 @@ export const getProducts: IRequestHandler = (req, res, next) => {
 }
 
 export const getIndex: IRequestHandler = (req, res, next) => {
-    Product.findAll()
+    Product.fetchAll()
         .then((products) => {
             res.render("shop/index", {
                 prods: products,
@@ -110,22 +109,22 @@ export const getProduct: IRequestHandler = (req, res, next) => {
     const prodId = req.params.productId;
     if (prodId) {
         // Using WHERE clause
-        Product.findAll({ where: { id: prodId } })
-            .then(products => {
-                if (products.length > 0) {
-                    const product = products[0];
-                    if (product) {
-                        res.render("shop/product-detail", {
-                            pageTitle: product.title,
-                            path: "/products",
-                            product: product
-                        })
-                    }
-                } else {
-                    res.redirect('/products');
-                }
-            })
-            .catch(err => { console.log(err) });
+        // Product.findAll({ where: { id: prodId } })
+        //     .then(products => {
+        //         if (products.length > 0) {
+        //             const product = products[0];
+        //             if (product) {
+        //                 res.render("shop/product-detail", {
+        //                     pageTitle: product.title,
+        //                     path: "/products",
+        //                     product: product
+        //                 })
+        //             }
+        //         } else {
+        //             res.redirect('/products');
+        //         }
+        //     })
+        //     .catch(err => { console.log(err) });
         // // Using findByPk
         // Product.findByPk(prodId)
         //     .then(prod => {
