@@ -13,7 +13,7 @@ export const getProducts: IRequestHandler = (req, res, next) => {
                 path: "/products",
             })
         })
-        .catch(err => console.log(err));
+        .catch(err => { console.log(err) });
 }
 
 export const getIndex: IRequestHandler = (req, res, next) => {
@@ -25,7 +25,7 @@ export const getIndex: IRequestHandler = (req, res, next) => {
                 path: "/",
             });
         })
-        .catch(err => console.log(err));
+        .catch(err => { console.log(err) });
 }
 
 export const getCart: IRequestHandler = (req, res, next) => {
@@ -87,13 +87,24 @@ export const postCart: IRequestHandler = (req, res, next) => {
 }
 
 export const postCartDeleteProduct: IRequestHandler = (req, res, next) => {
-    // const prodId: string | undefined = req.body.productId;
-    // if (prodId) {
-    //     Product.findById(prodId, (product: IProduct) => {
-    //         Cart.deleteProduct(prodId, product.price);
-    //         res.redirect("/cart");
-    //     });
-    // }
+    const prodId: string = req.body.productId;
+    const user = req.user;
+    if (prodId && user) {
+        user.getCart()
+            .then(cart => {
+                return cart.getProducts({ where: { id: prodId } })
+            })
+            .then(products => {
+                const product = products[0];
+                if (product && product.cartItem) {
+                    return product.cartItem.destroy();
+                }
+            })
+            .then(() => {
+                res.redirect("/cart");
+            })
+            .catch((err: Error) => { console.log(err) })
+    }
 }
 
 export const getProduct: IRequestHandler = (req, res, next) => {
@@ -103,17 +114,19 @@ export const getProduct: IRequestHandler = (req, res, next) => {
         Product.findAll({ where: { id: prodId } })
             .then(products => {
                 if (products.length > 0) {
-                    const product = products[0] as IProduct;
-                    res.render("shop/product-detail", {
-                        pageTitle: product.title,
-                        path: "/products",
-                        product: product
-                    })
+                    const product = products[0];
+                    if (product) {
+                        res.render("shop/product-detail", {
+                            pageTitle: product.title,
+                            path: "/products",
+                            product: product
+                        })
+                    }
                 } else {
                     res.redirect('/products');
                 }
             })
-            .catch(err => console.log(err));
+            .catch(err => { console.log(err) });
         // // Using findByPk
         // Product.findByPk(prodId)
         //     .then(prod => {
