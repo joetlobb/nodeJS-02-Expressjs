@@ -1,5 +1,5 @@
 // import { Cart } from "../models/cart.ts";
-import Product from "../models/product.ts";
+// import Product from "../models/product.ts";
 import type { IRequestHandler } from "../types/requestHandler.ts";
 import type Cart from "../models/cart.ts";
 

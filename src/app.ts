@@ -7,13 +7,7 @@ import rootDir from "./utils/path.ts";
 import adminRoutes from "./routes/admin.ts";
 import shopRoutes from "./routes/shop.ts";
 import { get404 } from "./controllers/error.ts";
-import sequelize from "./utils/database.ts";
-import Product from "./models/product.ts";
-import User from "./models/user.ts";
-import Cart from "./models/cart.ts";
-import CartItem from "./models/cart-item.ts";
-import Order from "./models/order.ts";
-import OrderItem from "./models/order-item.ts";
+import mongoConnect from "./utils/database.ts";
 
 const app = express();
 
@@ -24,56 +18,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(rootDir, "..", "public")));
 
 app.use((req, res, next) => {
-    User.findByPk(1)
-        .then(user => {
-            if (user) {
-                req.user = user;
-                next();
-            }
-        })
-        .catch(err => console.log(err));
+    // User.findByPk(1)
+    //     .then(user => {
+    //         if (user) {
+    //             req.user = user;
+    //             next();
+    //         }
+    //     })
+    //     .catch(err => console.log(err));
 });
 
-app.use("/admin", adminRoutes);
-app.use(shopRoutes);
+// app.use("/admin", adminRoutes);
+// app.use(shopRoutes);
 
 app.use(get404);
 
-Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE', foreignKey: { allowNull: false } });
-User.hasMany(Product);
-User.hasOne(Cart);
-Cart.belongsTo(User);
-Cart.belongsToMany(Product, { through: CartItem });
-Product.belongsToMany(Cart, { through: CartItem });
-Order.belongsTo(User);
-User.hasMany(Order);
-Order.belongsToMany(Product, { through: OrderItem });
-Product.belongsToMany(Order, { through: OrderItem });
-
-sequelize
-    .sync(
-    // { force: true }
-)
-    .then((result) => {
-        return User.findByPk(1)
-    })
-    .then(user => {
-        if (!user) {
-            return User.create({ name: 'Joe', email: 'joe@joe.com' })
-        }
-        return Promise.resolve(user);
-    })
-    .then(async (user) => {
-        const existingCart = await user.getCart();
-
-        if (!existingCart) {
-            return user.createCart();
-        }
-        return existingCart;
-    })
-    .then(cart => {
-        app.listen(3000);
-    }
-    )
-    .catch(err => console.log(err));
-
+mongoConnect((client) => {
+    console.log(client)
+    app.listen(3000);
+})

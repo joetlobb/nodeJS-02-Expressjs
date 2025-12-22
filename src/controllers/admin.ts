@@ -1,4 +1,4 @@
-import Product from "../models/product.ts";
+// import Product from "../models/product.ts";
 import type { IRequestHandler } from "../types/requestHandler.ts";
 import type { IProduct } from "../types/products.ts";
 
