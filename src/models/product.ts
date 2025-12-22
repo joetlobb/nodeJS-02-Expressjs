@@ -1,6 +1,9 @@
+import { ObjectId } from "mongodb";
 import { getDb } from "../utils/database.ts";
+import type { IProduct } from "../types/products.ts";
 
 class Product {
+    private _id?: ObjectId;
     private title: string;
     private price: number;
     private description: string;
@@ -16,7 +19,19 @@ class Product {
     save() {
         const db = getDb();
         // db.collection('products').insertMany([]);
-        return db.collection('products').insertOne(this)
+        const productData: IProduct = {
+            title: this.title,
+            price: this.price,
+            description: this.description,
+            imageUrl: this.imageUrl,
+        };
+
+        // If we have an _id (updating existing product), add it to the object
+        if (this._id) {
+            productData._id = this._id;
+        }
+
+        return db.collection('products').insertOne(productData)
             .then(result => {
                 console.log(result)
             })
@@ -26,11 +41,27 @@ class Product {
     static fetchAll() {
         const db = getDb();
         return db.collection('products').find().toArray()
-        .then(products => {
-            console.log(products)
-            return products;
-        })
-        .catch(err => {console.log(err)});
+            .then(products => {
+                console.log(products)
+                return products;
+            })
+            .catch(err => { console.log(err) });
+    }
+
+    static findById(id: string) {
+        const db = getDb();
+
+        // 1. Validation check to prevent BSONError
+        if (!ObjectId.isValid(id)) {
+            console.log('Invalid ObjectId passed:', id);
+            return Promise.resolve(null);
+        }
+        return db.collection('products').find({ _id: new ObjectId(id) }).next()
+            .then(product => {
+                console.log(product)
+                return product;
+            })
+            .catch(err => { console.log(err) });
     }
 }
 

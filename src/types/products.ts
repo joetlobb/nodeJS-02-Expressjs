@@ -1,9 +1,9 @@
-import { Model } from 'sequelize';
+import type { ObjectId } from "mongodb";
 
-export interface IProduct extends Model {
-  title: string;
-  imageUrl: string;
-  price: number;
-  description: string;
-  id: string;
+export interface IProduct {
+    _id?: ObjectId;
+    title: string;
+    price: number;
+    description: string;
+    imageUrl: string;
 }
