@@ -122,19 +122,25 @@ export const postOrder: IRequestHandler = (req, res, next) => {
 };
 
 export const getOrders: IRequestHandler = (req, res, next) => {
-  //   const user = req.user;
-  //   user
-  //     ?.getOrders({ include: ["products"] })
-  //     .then((orders) => {
-  //       res.render("shop/orders", {
-  //         pageTitle: "Your Orders",
-  //         path: "/orders",
-  //         orders: orders,
-  //       });
-  //     })
-  //     .catch((err: Error) => {
-  //       console.log(err);
-  //     });
+  const user = req.user;
+  if (!user)
+    return res.render("shop/orders", {
+      pageTitle: "Your Orders",
+      path: "/orders",
+      orders: [],
+    });
+  user!
+    .getOrders()
+    .then((orders) => {
+      res.render("shop/orders", {
+        pageTitle: "Your Orders",
+        path: "/orders",
+        orders: orders,
+      });
+    })
+    .catch((err: Error) => {
+      console.log(err);
+    });
 };
 
 export const getCheckout: IRequestHandler = (req, res, next) => {
