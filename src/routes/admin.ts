@@ -1,11 +1,11 @@
 import { Router } from "express";
 import {
   getAddProduct,
-  // getEditProduct,
-  // getProducts,
+  getEditProduct,
+  getProducts,
   postAddProduct,
   // postDeleteProduct,
-  // postEditProduct,
+  postEditProduct,
 } from "../controllers/admin.ts";
 
 const router = Router();
@@ -14,14 +14,14 @@ const router = Router();
 router.get("/add-product", getAddProduct);
 
 // // /admin/products >>> GET
-// router.get("/products", getProducts);
+router.get("/products", getProducts);
 
 // /admin/add-product >>> POST
 router.post("/add-product", postAddProduct);
 
-// router.get("/edit-product/:productId", getEditProduct);
+router.get("/edit-product/:productId", getEditProduct);
 
-// router.post("/edit-product", postEditProduct);
+router.post("/edit-product", postEditProduct);
 
 // router.post("/delete-product", postDeleteProduct);
 

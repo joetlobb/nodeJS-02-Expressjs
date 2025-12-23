@@ -30,75 +30,74 @@ export const postAddProduct: IRequestHandler = (req, res, next) => {
     });
 };
 
-// export const getEditProduct: IRequestHandler = (req, res, next) => {
-//   const editMode = req.query.edit === "true" ? true : false;
-//   if (!editMode) {
-//     return res.redirect("/");
-//   }
-//   const prodId = req.params.productId;
-//   if (prodId) {
-//     Product.findById(prodId)
-//       .then((product) => {
-//         res.render("admin/edit-product", {
-//           pageTitle: "Edit Product",
-//           path: "/admin/edit-product",
-//           editing: editMode,
-//           product: product,
-//         });
-//       })
-//       .catch((err: Error) => {
-//         console.log(err);
-//       });
-//   } else {
-//     res.redirect("/admin/products");
-//   }
-// };
+export const getEditProduct: IRequestHandler = (req, res, next) => {
+  const editMode = req.query.edit === "true" ? true : false;
+  if (!editMode) {
+    return res.redirect("/");
+  }
+  const prodId = req.params.productId;
+  if (!prodId) {
+    res.redirect("/admin/products");
+  }
+  Product.findById(prodId)
+    .then((product) => {
+      res.render("admin/edit-product", {
+        pageTitle: "Edit Product",
+        path: "/admin/edit-product",
+        editing: editMode,
+        product: product,
+      });
+    })
+    .catch((err: Error) => {
+      console.log(err);
+    });
+};
 
-// export const postEditProduct: IRequestHandler = (req, res, next) => {
-//   const prodId = req.body.productId;
-//   const updatedTitle = req.body.title;
-//   const updatedImageUrl = req.body.imageUrl;
-//   const updatedPrice = +req.body.price;
-//   const updatedDescription = req.body.description;
-//   Product.findById(prodId)
-//     .then((prod) => {
-//       if (!prod) {
-//         res.redirect("/admin/products");
-//       } else {
-//         const product = new Product(
-//           updatedTitle,
-//           updatedPrice,
-//           updatedDescription,
-//           updatedImageUrl,
-//           new ObjectId(prodId),
-//         );
-//         return product.save();
-//       }
-//     })
-//     .then((result) => {
-//       console.log("Updated product");
-//       res.redirect("/admin/products");
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// };
+export const postEditProduct: IRequestHandler = (req, res, next) => {
+  const prodId = req.body.productId;
+  const updatedTitle = req.body.title;
+  const updatedPrice = +req.body.price;
+  const updatedDescription = req.body.description;
+  const updatedImageUrl = req.body.imageUrl;
+  if (!prodId) return res.redirect("/admin/products");
+  Product.findById(prodId)
+    .then((product) => {
+      if (!product) {
+        res.redirect("/admin/products");
+        return;
+      }
+      product.title = updatedTitle;
+      product.price = updatedPrice;
+      product.description = updatedDescription;
+      product.imageUrl = updatedImageUrl;
+      return product.save();
+    })
+    .then((result) => {
+      if (result) {
+        console.log("Updated product");
+        res.redirect("/admin/products");
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
-// export const getProducts: IRequestHandler = (req, res, next) => {
-//   Product.fetchAll()
-//     .then((products) => {
-//       if (products) {
-//         res.render("admin/products", {
-//           prods: products,
-//           pageTitle: "Admin Products",
-//           path: "/admin/products",
-//         });
-//       }
-//     })
-//     .catch((err: Error) => {
-//       console.log(err);
-//     });
-// };
+export const getProducts: IRequestHandler = (req, res, next) => {
+  Product.find()
+    .then((products) => {
+      if (products) {
+        res.render("admin/products", {
+          prods: products,
+          pageTitle: "Admin Products",
+          path: "/admin/products",
+        });
+      }
+    })
+    .catch((err: Error) => {
+      console.log(err);
+    });
+};
 
 // export const postDeleteProduct: IRequestHandler = (req, res, next) => {
 //   const prodId = req.body.productId;
