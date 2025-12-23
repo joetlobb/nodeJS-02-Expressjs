@@ -97,6 +97,22 @@ class User {
       });
   }
 
+  deleteItemFromCart(prodId: string) {
+    if (!this.cart || !this._id)
+      return Promise.reject("No cart or user has no ID");
+    const updatedCartItems = this.cart.items.filter(
+      (i) => i.productId.toString() !== prodId.toString(),
+    );
+
+    const db = getDb();
+    return db
+      .collection("users")
+      .updateOne(
+        { _id: this._id },
+        { $set: { cart: { items: updatedCartItems } } },
+      );
+  }
+
   static findById(id: string) {
     const db = getDb();
     return db.collection("users").findOne({ _id: new ObjectId(id) });
