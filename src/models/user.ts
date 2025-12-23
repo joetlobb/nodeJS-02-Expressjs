@@ -113,6 +113,36 @@ class User {
       );
   }
 
+  addOrder() {
+    if (!this._id || !this.cart) return Promise.reject("No user ID or no cart");
+
+    const db = getDb();
+    const cartItems = this.getCart();
+    if (!cartItems) return Promise.reject("Cannot get cart items");
+    return cartItems
+      .then((products) => {
+        const order = {
+          items: products,
+          user: {
+            _id: this._id,
+            name: this.name,
+          },
+        };
+        return db.collection("orders").insertOne(order);
+      })
+      .then((result) => {
+        this.cart = { items: [] };
+        return db
+          .collection("users")
+          .updateOne({ _id: this._id! }, { $set: { cart: { items: [] } } });
+      });
+  }
+
+  getOrders() {
+    // const db = getDb();
+    // return db.collection('orders')
+  }
+
   static findById(id: string) {
     const db = getDb();
     return db.collection("users").findOne({ _id: new ObjectId(id) });

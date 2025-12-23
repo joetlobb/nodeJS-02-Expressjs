@@ -109,35 +109,16 @@ export const getProduct: IRequestHandler = (req, res, next) => {
 };
 
 export const postOrder: IRequestHandler = (req, res, next) => {
-  // const user = req.user;
-  // let fetchedCart: Cart;
-  // if (user) {
-  //     user.getCart()
-  //         .then(cart => {
-  //             fetchedCart = cart;
-  //             return cart.getProducts()
-  //         })
-  //         .then(async products => {
-  //             try {
-  //                 const order = await user.createOrder();
-  //                 return await order.addProducts(products.map(product => {
-  //                     product.orderItem = {
-  //                         quantity: product.cartItem?.quantity ?? 1
-  //                     };
-  //                     return product;
-  //                 }));
-  //             } catch (err) {
-  //                 console.log(err);
-  //             }
-  //         })
-  //         .then(() => {
-  //             return fetchedCart.setProducts([]);
-  //         })
-  //         .then(() => {
-  //             res.redirect('/orders')
-  //         })
-  //         .catch((err: Error) => { console.log(err) })
-  // }
+  const user = req.user;
+  if (!user) return;
+  user
+    .addOrder()
+    .then(() => {
+      res.redirect("/orders");
+    })
+    .catch((err: Error) => {
+      console.log(err);
+    });
 };
 
 export const getOrders: IRequestHandler = (req, res, next) => {
