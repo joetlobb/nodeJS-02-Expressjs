@@ -14,11 +14,14 @@ export const postAddProduct: IRequestHandler = (req, res, next) => {
   const price = +req.body.price;
   const description = req.body.description;
   const imageUrl = req.body.imageUrl;
+  const user = req.user;
+  if (!user) return res.redirect("/");
   const product = new Product({
     title: title,
     price: price,
     description: description,
     imageUrl: imageUrl,
+    userId: user._id,
   });
   product
     .save()

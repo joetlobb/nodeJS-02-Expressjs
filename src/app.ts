@@ -23,7 +23,7 @@ app.use((req, res, next) => {
   User.findById("694b1c86fc239ce960922b71")
     .then((user) => {
       if (user) {
-        req.user = new User(user.name, user.email, user.cart || { items: [] });
+        req.user = user;
       }
       next();
     })
