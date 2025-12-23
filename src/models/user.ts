@@ -1,3 +1,32 @@
+import { model, Schema, Types } from "mongoose";
+
+const userSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  cart: {
+    items: [
+      {
+        productId: {
+          type: Types.ObjectId,
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+  },
+});
+
+export default model("User", userSchema);
+
 // import { ObjectId } from "mongodb";
 // import { getDb } from "../utils/database.ts";
 // import type { ICart, ICartItem } from "../types/cart.ts";
