@@ -99,17 +99,17 @@ export const getProducts: IRequestHandler = (req, res, next) => {
     });
 };
 
-// export const postDeleteProduct: IRequestHandler = (req, res, next) => {
-//   const prodId = req.body.productId;
-//   if (!prodId) {
-//     res.redirect("/admin/products");
-//   }
-//   Product.deleteById(prodId)
-//     .then((result) => {
-//       console.log("Deleted product");
-//       res.redirect("/admin/products");
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// };
+export const postDeleteProduct: IRequestHandler = (req, res, next) => {
+  const prodId = req.body.productId;
+  if (!prodId) {
+    return res.redirect("/admin/products");
+  }
+  Product.findByIdAndDelete(prodId)
+    .then((result) => {
+      console.log("Deleted product");
+      res.redirect("/admin/products");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
