@@ -1,36 +1,34 @@
-// import { ObjectId } from "mongodb";
-// import Product from "../models/product.ts";
-// import type { IRequestHandler } from "../types/requestHandler.ts";
+import Product from "../models/product.ts";
+import type { IRequestHandler } from "../types/requestHandler.ts";
 
-// export const getAddProduct: IRequestHandler = (req, res, next) => {
-//   res.render("admin/edit-product", {
-//     pageTitle: "Add Product",
-//     path: "/admin/add-product",
-//     editing: false,
-//   });
-// };
+export const getAddProduct: IRequestHandler = (req, res, next) => {
+  res.render("admin/edit-product", {
+    pageTitle: "Add Product",
+    path: "/admin/add-product",
+    editing: false,
+  });
+};
 
-// export const postAddProduct: IRequestHandler = (req, res, next) => {
-//   const title = req.body.title;
-//   const price = +req.body.price;
-//   const description = req.body.description;
-//   const imageUrl = req.body.imageUrl;
-//   const user = req.user;
-//   const userId = user?.getUserId(); // This could be undefined
-//   if (!user || !userId) {
-//     // If there's no user or ID, we shouldn't even try to save
-//     return res.redirect("/");
-//   }
-//   const product = new Product(title, price, description, imageUrl, userId);
-//   product
-//     .save()
-//     .then(() => {
-//       res.redirect("/");
-//     })
-//     .catch((err: Error) => {
-//       console.log(err);
-//     });
-// };
+export const postAddProduct: IRequestHandler = (req, res, next) => {
+  const title = req.body.title;
+  const price = +req.body.price;
+  const description = req.body.description;
+  const imageUrl = req.body.imageUrl;
+  const product = new Product({
+    title: title,
+    price: price,
+    description: description,
+    imageUrl: imageUrl,
+  });
+  product
+    .save()
+    .then(() => {
+      res.redirect("/");
+    })
+    .catch((err: Error) => {
+      console.log(err);
+    });
+};
 
 // export const getEditProduct: IRequestHandler = (req, res, next) => {
 //   const editMode = req.query.edit === "true" ? true : false;
