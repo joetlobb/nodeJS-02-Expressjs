@@ -6,6 +6,7 @@ export const getAddProduct: IRequestHandler = (req, res, next) => {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     editing: false,
+    isAuthenticated: req.isLoggedin,
   });
 };
 
@@ -97,6 +98,7 @@ export const getProducts: IRequestHandler = (req, res, next) => {
           prods: products,
           pageTitle: "Admin Products",
           path: "/admin/products",
+          isAuthenticated: req.isLoggedin,
         });
       }
     })

@@ -6,6 +6,7 @@ declare global {
     // Merge the data interface with Mongoose's Document type
     interface Request {
       user?: (Document & IUser) | null;
+      isLoggedin?: Boolean;
     }
   }
 }

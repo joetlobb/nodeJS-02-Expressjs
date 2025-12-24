@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 import rootDir from "./utils/path.ts";
 import adminRoutes from "./routes/admin.ts";
 import shopRoutes from "./routes/shop.ts";
+import authRoutes from "./routes/auth.ts";
 import { get404 } from "./controllers/error.ts";
 import User from "./models/user.ts";
 import mongoose from "mongoose";
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 
 app.use(get404);
 
