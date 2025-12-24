@@ -3,7 +3,9 @@ import dotenv from "dotenv";
 
 import express from "express";
 import bodyParser from "body-parser";
+import mongoose from "mongoose";
 import session from "express-session";
+import connectMongoDBSession from "connect-mongodb-session";
 
 import rootDir from "./utils/path.ts";
 import adminRoutes from "./routes/admin.ts";
@@ -11,9 +13,18 @@ import shopRoutes from "./routes/shop.ts";
 import authRoutes from "./routes/auth.ts";
 import { get404 } from "./controllers/error.ts";
 import User from "./models/user.ts";
-import mongoose from "mongoose";
+
+dotenv.config();
+const MONGODB_URI = process.env.DB_URL;
+
+if (!MONGODB_URI) process.exit();
 
 const app = express();
+const MongoDBStore = connectMongoDBSession(session);
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: "session",
+});
 
 app.set("view engine", "ejs");
 app.set("views", path.join(rootDir, "views"));
@@ -25,18 +36,22 @@ app.use(
     secret: "my secret long string",
     resave: false,
     saveUninitialized: false,
+    store: store,
   }),
 );
 
 app.use((req, res, next) => {
-  User.findById("694b1c86fc239ce960922b71")
+  if (!req.session || !req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user)
     .then((user) => {
-      if (user) {
-        req.user = user as any;
-      }
+      req.user = user as any;
       next();
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 app.use("/admin", adminRoutes);
@@ -45,12 +60,8 @@ app.use(authRoutes);
 
 app.use(get404);
 
-dotenv.config();
-const dbUrl = process.env.DB_URL;
-
-if (!dbUrl) process.exit();
 mongoose
-  .connect(dbUrl)
+  .connect(MONGODB_URI)
   .then((result) => {
     User.findOne().then((user) => {
       if (!user) {

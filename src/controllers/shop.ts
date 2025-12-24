@@ -9,7 +9,7 @@ export const getProducts: IRequestHandler = (req, res, next) => {
         prods: products,
         pageTitle: "All Products",
         path: "/products",
-        isAuthenticated: req.isLoggedin,
+        isAuthenticated: req.session.isLoggedin,
       });
     })
     .catch((err) => {
@@ -24,7 +24,7 @@ export const getIndex: IRequestHandler = (req, res, next) => {
         prods: products,
         pageTitle: "Shop",
         path: "/",
-        isAuthenticated: req.isLoggedin,
+        isAuthenticated: req.session.isLoggedin,
       });
     })
     .catch((err) => {
@@ -45,7 +45,7 @@ export const getCart: IRequestHandler = (req, res, next) => {
         pageTitle: "Your Cart",
         path: "/cart",
         products: products,
-        isAuthenticated: req.isLoggedin,
+        isAuthenticated: req.session.isLoggedin,
       });
     })
     .catch((err: Error) => {
@@ -102,7 +102,7 @@ export const getProduct: IRequestHandler = (req, res, next) => {
           pageTitle: product.title,
           path: "/products",
           product: product,
-          isAuthenticated: req.isLoggedin,
+          isAuthenticated: req.session.isLoggedin,
         });
       } else {
         res.redirect("/products");
@@ -159,7 +159,7 @@ export const getOrders: IRequestHandler = (req, res, next) => {
         pageTitle: "Your Orders",
         path: "/orders",
         orders: orders,
-        isAuthenticated: req.isLoggedin,
+        isAuthenticated: req.session.isLoggedin,
       });
     })
     .catch((err: Error) => {

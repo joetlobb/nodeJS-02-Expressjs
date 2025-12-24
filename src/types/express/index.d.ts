@@ -15,7 +15,7 @@ declare module "express-session" {
   interface SessionData {
     isLoggedin: boolean;
     // You usually want to store the user ID or the user object here too
-    user: any;
+    user: String;
   }
 }
 

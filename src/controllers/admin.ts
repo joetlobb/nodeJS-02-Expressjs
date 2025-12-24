@@ -6,7 +6,7 @@ export const getAddProduct: IRequestHandler = (req, res, next) => {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     editing: false,
-    isAuthenticated: req.isLoggedin,
+    isAuthenticated: req.session.isLoggedin,
   });
 };
 
@@ -50,6 +50,7 @@ export const getEditProduct: IRequestHandler = (req, res, next) => {
         path: "/admin/edit-product",
         editing: editMode,
         product: product,
+        isAuthenticated: req.session.isLoggedin,
       });
     })
     .catch((err: Error) => {
@@ -98,7 +99,7 @@ export const getProducts: IRequestHandler = (req, res, next) => {
           prods: products,
           pageTitle: "Admin Products",
           path: "/admin/products",
-          isAuthenticated: req.isLoggedin,
+          isAuthenticated: req.session.isLoggedin,
         });
       }
     })
