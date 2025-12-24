@@ -76,6 +76,12 @@ userSchema.methods.removeFromCart = function (
   return this.save();
 };
 
+userSchema.methods.clearCart = function () {
+  this.cart = { items: [] };
+  this.markModified("cart");
+  return this.save();
+};
+
 export default model("User", userSchema);
 
 // import { ObjectId } from "mongodb";

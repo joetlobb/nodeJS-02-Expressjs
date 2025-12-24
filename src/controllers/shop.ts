@@ -1,3 +1,4 @@
+import Order from "../models/order.ts";
 import Product from "../models/product.ts";
 import type { IRequestHandler } from "../types/requestHandler.ts";
 
@@ -106,40 +107,60 @@ export const getProduct: IRequestHandler = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-// export const postOrder: IRequestHandler = (req, res, next) => {
-//   const user = req.user;
-//   if (!user) return;
-//   user
-//     .addOrder()
-//     .then(() => {
-//       res.redirect("/orders");
-//     })
-//     .catch((err: Error) => {
-//       console.log(err);
-//     });
-// };
+export const postOrder: IRequestHandler = (req, res, next) => {
+  const user = req.user;
+  if (!user) return;
 
-// export const getOrders: IRequestHandler = (req, res, next) => {
-//   const user = req.user;
-//   if (!user)
-//     return res.render("shop/orders", {
-//       pageTitle: "Your Orders",
-//       path: "/orders",
-//       orders: [],
-//     });
-//   user!
-//     .getOrders()
-//     .then((orders) => {
-//       res.render("shop/orders", {
-//         pageTitle: "Your Orders",
-//         path: "/orders",
-//         orders: orders,
-//       });
-//     })
-//     .catch((err: Error) => {
-//       console.log(err);
-//     });
-// };
+  user
+    .populate("cart.items.productId")
+    .then((user) => {
+      const products = user.cart.items.map((i) => {
+        return {
+          quantity: i.quantity,
+          productData: { ...(i.productId as any)._doc },
+        };
+      });
+      const order = new Order({
+        user: {
+          name: user.name,
+          userId: user,
+        },
+        products: products,
+      });
+
+      return order.save();
+    })
+    .then(() => {
+      return user.clearCart();
+    })
+    .then(() => {
+      res.redirect("/orders");
+    })
+    .catch((err: Error) => {
+      console.log(err);
+    });
+};
+
+export const getOrders: IRequestHandler = (req, res, next) => {
+  const user = req.user;
+  if (!user)
+    return res.render("shop/orders", {
+      pageTitle: "Your Orders",
+      path: "/orders",
+      orders: [],
+    });
+  Order.find({ "user.userId": user._id })
+    .then((orders) => {
+      res.render("shop/orders", {
+        pageTitle: "Your Orders",
+        path: "/orders",
+        orders: orders,
+      });
+    })
+    .catch((err: Error) => {
+      console.log(err);
+    });
+};
 
 // export const getCheckout: IRequestHandler = (req, res, next) => {
 //   res.render("shop/checkout", { pageTitle: "Checkout", path: "/checkout" });

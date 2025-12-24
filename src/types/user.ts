@@ -5,9 +5,13 @@ export interface IUser {
   name: string;
   email: string;
   cart: {
-    items: { productId: Types.ObjectId; quantity: number }[];
+    items: {
+      productId: Object;
+      quantity: number;
+    }[];
   };
 
   addToCart(product: IProduct): Promise<any>;
   removeFromCart(productId: string | Types.ObjectId): Promise<any>;
+  clearCart(): Promise<any>;
 }
