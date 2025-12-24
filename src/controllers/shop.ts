@@ -62,7 +62,6 @@ export const postCart: IRequestHandler = (req, res, next) => {
       }
     })
     .then((result) => {
-      console.log(result);
       res.redirect("/cart");
     })
     .catch((err) => {
@@ -70,22 +69,22 @@ export const postCart: IRequestHandler = (req, res, next) => {
     });
 };
 
-// export const postCartDeleteProduct: IRequestHandler = (req, res, next) => {
-//   const prodId: string = req.body.productId;
-//   const user = req.user;
-//   if (!prodId && !user) {
-//     return;
-//   } else {
-//     user!
-//       .deleteItemFromCart(prodId)
-//       .then(() => {
-//         res.redirect("/cart");
-//       })
-//       .catch((err: Error) => {
-//         console.log(err);
-//       });
-//   }
-// };
+export const postCartDeleteProduct: IRequestHandler = (req, res, next) => {
+  const prodId: string = req.body.productId;
+  const user = req.user;
+  if (!prodId && !user) {
+    return;
+  } else {
+    user!
+      .removeFromCart(prodId)
+      .then(() => {
+        res.redirect("/cart");
+      })
+      .catch((err: Error) => {
+        console.log(err);
+      });
+  }
+};
 
 export const getProduct: IRequestHandler = (req, res, next) => {
   const prodId = req.params.productId;

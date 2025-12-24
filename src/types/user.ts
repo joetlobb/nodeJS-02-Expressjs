@@ -9,4 +9,5 @@ export interface IUser {
   };
 
   addToCart(product: IProduct): Promise<any>;
+  removeFromCart(productId: string | Types.ObjectId): Promise<any>;
 }
