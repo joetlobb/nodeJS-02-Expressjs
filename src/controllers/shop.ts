@@ -29,45 +29,46 @@ export const getIndex: IRequestHandler = (req, res, next) => {
     });
 };
 
-// export const getCart: IRequestHandler = (req, res, next) => {
-//   const user = req.user;
-//   if (!user) {
-//     return res.redirect("/");
-//   }
-//   user
-//     .getCart()!
-//     .then((products) => {
-//       res.render("shop/cart", {
-//         pageTitle: "Your Cart",
-//         path: "/cart",
-//         products: products,
-//       });
-//     })
-//     .catch((err: Error) => {
-//       console.log(err);
-//     });
-// };
+export const getCart: IRequestHandler = (req, res, next) => {
+  const user = req.user;
+  if (!user) {
+    return res.redirect("/");
+  }
+  return user
+    .populate("cart.items.productId")
+    .then((user) => {
+      const products = user.cart.items;
+      res.render("shop/cart", {
+        pageTitle: "Your Cart",
+        path: "/cart",
+        products: products,
+      });
+    })
+    .catch((err: Error) => {
+      console.log(err);
+    });
+};
 
-// export const postCart: IRequestHandler = (req, res, next) => {
-//   const prodId = req.body.productId;
-//   const user = req.user;
-//   if (!user || !prodId) {
-//     return res.redirect("/products");
-//   }
-//   Product.findById(prodId)
-//     .then((product) => {
-//       if (product) {
-//         return user.addToCart(product as IProduct);
-//       }
-//     })
-//     .then((result) => {
-//       console.log(result);
-//       res.redirect("/cart");
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// };
+export const postCart: IRequestHandler = (req, res, next) => {
+  const prodId = req.body.productId;
+  const user = req.user;
+  if (!user || !prodId) {
+    return res.redirect("/products");
+  }
+  Product.findById(prodId)
+    .then((product) => {
+      if (product) {
+        return user.addToCart(product);
+      }
+    })
+    .then((result) => {
+      console.log(result);
+      res.redirect("/cart");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 // export const postCartDeleteProduct: IRequestHandler = (req, res, next) => {
 //   const prodId: string = req.body.productId;

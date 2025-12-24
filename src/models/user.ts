@@ -1,4 +1,6 @@
 import { model, Schema, Types } from "mongoose";
+import type { IProduct } from "../types/product.ts";
+import type { ICartItem } from "../types/cart.ts";
 
 const userSchema = new Schema({
   name: {
@@ -25,6 +27,42 @@ const userSchema = new Schema({
     ],
   },
 });
+
+userSchema.methods.addToCart = function (product: IProduct) {
+  if (!this.cart) {
+    this.cart = { items: [] };
+  }
+
+  const cartItemIdx = this.cart.items.findIndex((ci: ICartItem) => {
+    return ci.productId.toString() === product._id!.toString();
+  });
+
+  let newQuantity = 1;
+  const updatedCartItems = [...this.cart.items];
+
+  if (cartItemIdx >= 0) {
+    const currentItem = updatedCartItems[cartItemIdx];
+    if (currentItem) {
+      newQuantity = currentItem.quantity + 1;
+      updatedCartItems[cartItemIdx] = {
+        ...currentItem,
+        quantity: newQuantity,
+      };
+    }
+  } else {
+    updatedCartItems.push({
+      productId: product._id,
+      quantity: newQuantity,
+    });
+  }
+
+  const updatedCart = {
+    items: updatedCartItems,
+  };
+
+  this.cart = updatedCart;
+  return this.save();
+};
 
 export default model("User", userSchema);
 

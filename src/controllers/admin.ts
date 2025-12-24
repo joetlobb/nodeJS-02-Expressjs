@@ -88,8 +88,8 @@ export const postEditProduct: IRequestHandler = (req, res, next) => {
 
 export const getProducts: IRequestHandler = (req, res, next) => {
   Product.find()
-    .select("title price -_id") // only fetch title and price field and exclude the _id
-    .populate("userId", "name") // only fetch name field
+    // .select("title price -_id") // only fetch title and price field and exclude the _id
+    // .populate("userId", "name") // only fetch name field
     .then((products) => {
       if (products) {
         console.log(products);

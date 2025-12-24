@@ -1,10 +1,10 @@
-import type { ObjectId } from "mongodb";
+import type { Types } from "mongoose";
 
 export interface IProduct {
-  _id?: ObjectId;
+  _id: Types.ObjectId;
   title: string;
   price: number;
   description: string;
   imageUrl: string;
-  userId: ObjectId;
+  userId: Types.ObjectId;
 }

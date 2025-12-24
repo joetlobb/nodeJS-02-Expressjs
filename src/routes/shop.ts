@@ -5,18 +5,18 @@ import {
   // getOrders,
   getProduct,
   getProducts,
-  // postCart,
+  postCart,
   // postCartDeleteProduct,
   // postOrder,
-  // getCart,
+  getCart,
 } from "../controllers/shop.ts";
 
 const router = Router();
 
 router.get("/", getIndex);
 router.get("/products", getProducts);
-// router.get("/cart", getCart);
-// router.post("/cart", postCart);
+router.get("/cart", getCart);
+router.post("/cart", postCart);
 // router.post("/cart-delete-item", postCartDeleteProduct);
 router.get("/products/:productId", getProduct);
 // router.post("/create-order", postOrder);
