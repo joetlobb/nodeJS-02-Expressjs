@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 
 import express from "express";
 import bodyParser from "body-parser";
+import session from "express-session";
 
 import rootDir from "./utils/path.ts";
 import adminRoutes from "./routes/admin.ts";
@@ -19,12 +20,19 @@ app.set("views", path.join(rootDir, "views"));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(rootDir, "..", "public")));
+app.use(
+  session({
+    secret: "my secret long string",
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
 
 app.use((req, res, next) => {
   User.findById("694b1c86fc239ce960922b71")
     .then((user) => {
       if (user) {
-        req.user = user;
+        req.user = user as any;
       }
       next();
     })
