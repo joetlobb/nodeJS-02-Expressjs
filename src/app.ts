@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import session from "express-session";
 import connectMongoDBSession from "connect-mongodb-session";
+import csrf from "csurf";
 
 import rootDir from "./utils/path.ts";
 import adminRoutes from "./routes/admin.ts";
@@ -39,6 +40,7 @@ app.use(
     store: store,
   }),
 );
+const csrfProtection = csrf();
 
 app.use((req, res, next) => {
   if (!req.session || !req.session.user) {
@@ -52,6 +54,13 @@ app.use((req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
+});
+app.use(csrfProtection);
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedin;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 app.use("/admin", adminRoutes);

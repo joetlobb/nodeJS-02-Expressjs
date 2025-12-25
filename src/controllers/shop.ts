@@ -24,7 +24,6 @@ export const getIndex: IRequestHandler = (req, res, next) => {
         prods: products,
         pageTitle: "Shop",
         path: "/",
-        isAuthenticated: req.session.isLoggedin,
       });
     })
     .catch((err) => {
@@ -126,7 +125,7 @@ export const postOrder: IRequestHandler = (req, res, next) => {
       });
       const order = new Order({
         user: {
-          name: user.name,
+          email: user.email,
           userId: user,
         },
         products: products,
