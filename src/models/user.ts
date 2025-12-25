@@ -3,11 +3,11 @@ import type { IProduct } from "../types/product.ts";
 import type { ICartItem } from "../types/cart.ts";
 
 const userSchema = new Schema({
-  name: {
+  email: {
     type: String,
     required: true,
   },
-  email: {
+  password: {
     type: String,
     required: true,
   },

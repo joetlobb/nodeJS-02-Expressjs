@@ -2,8 +2,8 @@ import type { Types } from "mongoose";
 import type { IProduct } from "./product.ts";
 
 export interface IUser {
-  name: string;
   email: string;
+  password: string;
   cart: {
     items: {
       productId: Object;
