@@ -10,17 +10,18 @@ import {
   postOrder,
   getCart,
 } from "../controllers/shop.ts";
+import isAuth from "../middleware/isAuth.ts";
 
 const router = Router();
 
 router.get("/", getIndex);
 router.get("/products", getProducts);
-router.get("/cart", getCart);
-router.post("/cart", postCart);
-router.post("/cart-delete-item", postCartDeleteProduct);
 router.get("/products/:productId", getProduct);
-router.post("/create-order", postOrder);
-router.get("/orders", getOrders);
+router.get("/cart", isAuth, getCart);
+router.post("/cart", isAuth, postCart);
+router.post("/cart-delete-item", isAuth, postCartDeleteProduct);
+router.post("/create-order", isAuth, postOrder);
+router.get("/orders", isAuth, getOrders);
 // // router.get("/checkout", getCheckout);
 
 export default router;

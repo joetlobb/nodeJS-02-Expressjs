@@ -2,6 +2,10 @@ import Product from "../models/product.ts";
 import type { IRequestHandler } from "../types/requestHandler.ts";
 
 export const getAddProduct: IRequestHandler = (req, res, next) => {
+  // Not Scalable Way
+  // if (!req.session.isLoggedin) {
+  //   res.redirect("/");
+  // }
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
