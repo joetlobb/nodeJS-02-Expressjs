@@ -30,6 +30,7 @@
     "tsx": "^4.21.0"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "body-parser": "^2.2.1",
     "connect-mongodb-session": "^5.0.0",
     "dotenv": "^17.2.3",
