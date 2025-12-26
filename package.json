@@ -20,7 +20,9 @@
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.6",
+    "@types/connect-flash": "^0.0.40",
     "@types/connect-mongodb-session": "^2.4.8",
+    "@types/csurf": "^1.11.5",
     "@types/express": "^5.0.6",
     "@types/express-session": "^1.18.2",
     "@types/node": "^25.0.0",
@@ -32,6 +34,7 @@
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "body-parser": "^2.2.1",
+    "connect-flash": "^0.1.1",
     "connect-mongodb-session": "^5.0.0",
     "csurf": "^1.11.0",
     "dotenv": "^17.2.3",

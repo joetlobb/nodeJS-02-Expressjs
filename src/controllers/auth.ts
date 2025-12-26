@@ -3,11 +3,16 @@ import User from "../models/user.ts";
 import type { IRequestHandler } from "../types/requestHandler.ts";
 
 export const getLogin: IRequestHandler = (req, res, next) => {
-  //   const isLoggedin = req.get("Cookie")?.split("=")[1] === "true";
+  // Pull the array out of flash
+  const messages = req.flash("error");
+
+  // Extract the first string if it exists, otherwise null
+  const message = messages.length > 0 ? messages : null;
+
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
-    isAuthenticated: false,
+    errorMessage: message, // Now this is definitely a string or null
   });
 };
 
@@ -17,6 +22,7 @@ export const postLogin: IRequestHandler = (req, res, next) => {
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
+        req.flash("error", "Invalid email or password");
         return res.redirect("/login");
       }
       return bcrypt
@@ -30,6 +36,7 @@ export const postLogin: IRequestHandler = (req, res, next) => {
               res.redirect("/");
             });
           }
+          req.flash("error", "Invalid email or password");
           res.redirect("/login");
         })
         .catch((err) => {
@@ -42,10 +49,16 @@ export const postLogin: IRequestHandler = (req, res, next) => {
 };
 
 export const getSignup: IRequestHandler = (req, res, next) => {
+  // Pull the array out of flash
+  const messages = req.flash("error");
+
+  // Extract the first string if it exists, otherwise null
+  const message = messages.length > 0 ? messages : null;
+
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Signup",
-    isAuthenticated: false,
+    errorMessage: message,
   });
 };
 
@@ -56,6 +69,7 @@ export const postSignup: IRequestHandler = (req, res, next) => {
   User.findOne({ email: email })
     .then((userData) => {
       if (userData) {
+        req.flash("error", "Email already existed");
         res.redirect("/signup");
         return;
       }

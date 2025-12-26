@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import session from "express-session";
 import connectMongoDBSession from "connect-mongodb-session";
 import csrf from "csurf";
+import flash from "connect-flash";
 
 import rootDir from "./utils/path.ts";
 import adminRoutes from "./routes/admin.ts";
@@ -56,6 +57,7 @@ app.use((req, res, next) => {
     });
 });
 app.use(csrfProtection);
+app.use(flash());
 
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedin;
