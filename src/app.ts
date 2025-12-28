@@ -18,6 +18,7 @@ import User from "./models/user.ts";
 
 dotenv.config();
 const MONGODB_URI = process.env.DB_URL;
+export const SENDGRID_API = process.env.SENDGRID_API;
 
 if (!MONGODB_URI) process.exit();
 

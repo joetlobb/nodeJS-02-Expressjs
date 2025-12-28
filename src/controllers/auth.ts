@@ -1,6 +1,9 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import sendgrid from "@sendgrid/mail";
 import User from "../models/user.ts";
 import type { IRequestHandler } from "../types/requestHandler.ts";
+import { SENDGRID_API } from "../app.ts";
 
 export const getLogin: IRequestHandler = (req, res, next) => {
   // Pull the array out of flash
@@ -84,7 +87,27 @@ export const postSignup: IRequestHandler = (req, res, next) => {
           return user.save();
         })
         .then((result) => {
-          res.redirect("/login");
+          if (!SENDGRID_API) {
+            req.flash("error", "Email verification function disabled");
+            res.redirect("/signup");
+            return;
+          }
+          sendgrid.setApiKey(SENDGRID_API);
+          const message = {
+            to: email,
+            from: "joetlobb@gmail.com",
+            subject: "Signup Successfully!",
+            html: "<h1>Sign up successfully!</h1>",
+          };
+          return sendgrid
+            .send(message)
+            .then((info) => {
+              console.log("Sent", info);
+              res.redirect("/login");
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         });
     })
 
