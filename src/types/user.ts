@@ -4,6 +4,8 @@ import type { IProduct } from "./product.ts";
 export interface IUser {
   email: string;
   password: string;
+  resetToken?: string;
+  resetTokenExpiration?: string;
   cart: {
     items: {
       productId: Object;
