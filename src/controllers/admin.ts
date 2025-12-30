@@ -66,10 +66,14 @@ export const postEditProduct: IRequestHandler = (req, res, next) => {
   const updatedPrice = +req.body.price;
   const updatedDescription = req.body.description;
   const updatedImageUrl = req.body.imageUrl;
-  if (!prodId) return res.redirect("/admin/products");
+  const user = req.user;
+  if (!prodId && !user) return res.redirect("/admin/products");
   Product.findById(prodId)
     .then((product) => {
       if (!product) {
+        res.redirect("/admin/products");
+        return;
+      } else if (product.userId.toString() !== user!._id.toString()) {
         res.redirect("/admin/products");
         return;
       }
@@ -77,13 +81,12 @@ export const postEditProduct: IRequestHandler = (req, res, next) => {
       product.price = updatedPrice;
       product.description = updatedDescription;
       product.imageUrl = updatedImageUrl;
-      return product.save();
-    })
-    .then((result) => {
-      if (result) {
-        console.log("Updated product");
-        res.redirect("/admin/products");
-      }
+      return product.save().then((result) => {
+        if (result) {
+          console.log("Updated product");
+          res.redirect("/admin/products");
+        }
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -98,7 +101,7 @@ export const getProducts: IRequestHandler = (req, res, next) => {
       // .populate("userId", "name") // only fetch name field
       .then((products) => {
         if (products) {
-          console.log(products);
+          console.log("getProducts()", products);
           res.render("admin/products", {
             prods: products,
             pageTitle: "Admin Products",
@@ -118,12 +121,13 @@ export const getProducts: IRequestHandler = (req, res, next) => {
 
 export const postDeleteProduct: IRequestHandler = (req, res, next) => {
   const prodId = req.body.productId;
-  if (!prodId) {
+  const user = req.user;
+  if (!prodId && !user) {
     return res.redirect("/admin/products");
   }
-  Product.findByIdAndDelete(prodId)
+  Product.deleteOne({ _id: prodId, userId: user!._id })
     .then((result) => {
-      console.log("Deleted product");
+      console.log("Deleted product", result);
       res.redirect("/admin/products");
     })
     .catch((err) => {
