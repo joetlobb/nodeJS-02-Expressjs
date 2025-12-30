@@ -91,22 +91,29 @@ export const postEditProduct: IRequestHandler = (req, res, next) => {
 };
 
 export const getProducts: IRequestHandler = (req, res, next) => {
-  Product.find()
-    // .select("title price -_id") // only fetch title and price field and exclude the _id
-    // .populate("userId", "name") // only fetch name field
-    .then((products) => {
-      if (products) {
-        console.log(products);
-        res.render("admin/products", {
-          prods: products,
-          pageTitle: "Admin Products",
-          path: "/admin/products",
-        });
-      }
-    })
-    .catch((err: Error) => {
-      console.log(err);
-    });
+  const user = req.user;
+  if (user && user._id) {
+    Product.find({ userId: user._id })
+      // .select("title price -_id") // only fetch title and price field and exclude the _id
+      // .populate("userId", "name") // only fetch name field
+      .then((products) => {
+        if (products) {
+          console.log(products);
+          res.render("admin/products", {
+            prods: products,
+            pageTitle: "Admin Products",
+            path: "/admin/products",
+          });
+          return;
+        }
+      })
+      .catch((err: Error) => {
+        console.log(err);
+      });
+  } else {
+    res.redirect("/");
+    return;
+  }
 };
 
 export const postDeleteProduct: IRequestHandler = (req, res, next) => {
