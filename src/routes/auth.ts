@@ -20,7 +20,15 @@ router.post("/logout", postLogout);
 router.get("/signup", getSignup);
 router.post(
   "/signup",
-  check("email").isEmail().withMessage("Please enter a valid email."),
+  check("email")
+    .isEmail()
+    .withMessage("Please enter a valid email.")
+    .custom((value, { req }) => {
+      if (value === "test@test.com") {
+        throw new Error("This email is forbidden");
+      }
+      return true; // Return true to accept else condition
+    }),
   postSignup,
 );
 router.get("/reset", getReset);
