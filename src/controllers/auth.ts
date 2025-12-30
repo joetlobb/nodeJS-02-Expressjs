@@ -4,6 +4,7 @@ import sendgrid from "@sendgrid/mail";
 import User from "../models/user.ts";
 import type { IRequestHandler } from "../types/requestHandler.ts";
 import { SENDGRID_API } from "../app.ts";
+import { validationResult } from "express-validator";
 
 export const getLogin: IRequestHandler = (req, res, next) => {
   // Pull the array out of flash
@@ -69,6 +70,15 @@ export const postSignup: IRequestHandler = (req, res, next) => {
   const email: string = req.body.email;
   const password: string = req.body.password;
   const confirmPassword: string = req.body.confirmPassword;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log("postSignup()", errors.array());
+    return res.status(422).render("auth/signup", {
+      path: "/signup",
+      pageTitle: "Signup",
+      errorMessage: errors.array()[0]?.msg,
+    }); // Error code for validation failed
+  }
   User.findOne({ email: email })
     .then((userData) => {
       if (userData) {
