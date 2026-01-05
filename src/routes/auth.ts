@@ -19,13 +19,17 @@ router.get("/login", getLogin);
 router.post(
   "/login",
   [
-    check("email").isEmail().withMessage("Please enter a valid email."),
+    check("email")
+      .isEmail()
+      .withMessage("Please enter a valid email.")
+      .normalizeEmail(),
     check(
       "password",
       "Please enter a password with number and text and at least 5 characters long",
     )
       .isLength({ min: 5 })
-      .isAlphanumeric(),
+      .isAlphanumeric()
+      .trim(),
   ],
   postLogin,
 );
@@ -47,19 +51,23 @@ router.post(
             return Promise.reject("Email already existed");
           }
         });
-      }),
+      })
+      .normalizeEmail(),
     body(
       "password",
       "Please enter a password with only number and text and at least 5 characters long",
     )
       .isLength({ min: 5 })
-      .isAlphanumeric(),
-    body("confirmPassword").custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Passwords do not matched");
-      }
-      return true;
-    }),
+      .isAlphanumeric()
+      .trim(),
+    body("confirmPassword")
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("Passwords do not matched");
+        }
+        return true;
+      })
+      .trim(),
   ],
   postSignup,
 );
