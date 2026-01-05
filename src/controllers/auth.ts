@@ -69,7 +69,6 @@ export const getSignup: IRequestHandler = (req, res, next) => {
 export const postSignup: IRequestHandler = (req, res, next) => {
   const email: string = req.body.email;
   const password: string = req.body.password;
-  const confirmPassword: string = req.body.confirmPassword;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log("postSignup()", errors.array());
@@ -79,50 +78,39 @@ export const postSignup: IRequestHandler = (req, res, next) => {
       errorMessage: errors.array()[0]?.msg,
     }); // Error code for validation failed
   }
-  User.findOne({ email: email })
-    .then((userData) => {
-      if (userData) {
-        req.flash("error", "Email already existed");
+
+  bcrypt
+    .hash(password, 12)
+    .then((hashedPassword) => {
+      const user = new User({
+        email: email,
+        password: hashedPassword,
+        cart: { items: [] },
+      });
+      return user.save();
+    })
+    .then((result) => {
+      if (!SENDGRID_API) {
+        req.flash("error", "Email verification function disabled");
         res.redirect("/signup");
         return;
       }
-      return bcrypt
-        .hash(password, 12)
-        .then((hashedPassword) => {
-          const user = new User({
-            email: email,
-            password: hashedPassword,
-            cart: { items: [] },
-          });
-          return user.save();
+      sendgrid.setApiKey(SENDGRID_API);
+      const message = {
+        to: email,
+        from: "joetlobb@gmail.com",
+        subject: "Signup Successfully!",
+        html: "<h1>Sign up successfully!</h1>",
+      };
+      return sendgrid
+        .send(message)
+        .then((info) => {
+          console.log("Sent", info);
+          res.redirect("/login");
         })
-        .then((result) => {
-          if (!SENDGRID_API) {
-            req.flash("error", "Email verification function disabled");
-            res.redirect("/signup");
-            return;
-          }
-          sendgrid.setApiKey(SENDGRID_API);
-          const message = {
-            to: email,
-            from: "joetlobb@gmail.com",
-            subject: "Signup Successfully!",
-            html: "<h1>Sign up successfully!</h1>",
-          };
-          return sendgrid
-            .send(message)
-            .then((info) => {
-              console.log("Sent", info);
-              res.redirect("/login");
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+        .catch((err) => {
+          console.log(err);
         });
-    })
-
-    .catch((err) => {
-      console.log(err);
     });
 };
 

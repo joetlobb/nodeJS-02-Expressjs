@@ -11,6 +11,7 @@ import {
   postReset,
   postSignup,
 } from "../controllers/auth.ts";
+import user from "../models/user.ts";
 
 const router = Router();
 
@@ -25,10 +26,15 @@ router.post(
       .isEmail()
       .withMessage("Please enter a valid email.")
       .custom((value, { req }) => {
-        if (value === "test@test.com") {
-          throw new Error("This email is forbidden");
-        }
-        return true; // Return true to accept else condition
+        // if (value === "test@test.com") {
+        //   throw new Error("This email is forbidden");
+        // }
+        // return true; // Return true to accept else condition
+        return user.findOne({ email: value }).then((userData) => {
+          if (userData) {
+            return Promise.reject("Email already existed")
+          }
+        });
       }),
     body(
       "password",
