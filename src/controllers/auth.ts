@@ -76,6 +76,7 @@ export const getSignup: IRequestHandler = (req, res, next) => {
       password: "",
       confirmPassword: "",
     },
+    validationErrors: [],
   });
 };
 
@@ -91,10 +92,11 @@ export const postSignup: IRequestHandler = (req, res, next) => {
       pageTitle: "Signup",
       errorMessage: errors.array()[0]?.msg,
       oldInput: {
-      email: email,
-      password: password,
-      confirmPassword: confirmPassword,
-    },
+        email: email,
+        password: password,
+        confirmPassword: confirmPassword,
+      },
+      validationErrors: errors.array(),
     }); // Error code for validation failed
   }
 
