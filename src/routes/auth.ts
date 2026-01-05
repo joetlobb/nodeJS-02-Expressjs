@@ -16,7 +16,19 @@ import user from "../models/user.ts";
 const router = Router();
 
 router.get("/login", getLogin);
-router.post("/login", postLogin);
+router.post(
+  "/login",
+  [
+    check("email").isEmail().withMessage("Please enter a valid email."),
+    check(
+      "password",
+      "Please enter a password with number and text and at least 5 characters long",
+    )
+      .isLength({ min: 5 })
+      .isAlphanumeric(),
+  ],
+  postLogin,
+);
 router.post("/logout", postLogout);
 router.get("/signup", getSignup);
 router.post(
@@ -32,7 +44,7 @@ router.post(
         // return true; // Return true to accept else condition
         return user.findOne({ email: value }).then((userData) => {
           if (userData) {
-            return Promise.reject("Email already existed")
+            return Promise.reject("Email already existed");
           }
         });
       }),
