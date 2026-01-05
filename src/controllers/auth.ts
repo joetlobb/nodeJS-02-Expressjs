@@ -71,12 +71,18 @@ export const getSignup: IRequestHandler = (req, res, next) => {
     path: "/signup",
     pageTitle: "Signup",
     errorMessage: message,
+    oldInput: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 };
 
 export const postSignup: IRequestHandler = (req, res, next) => {
   const email: string = req.body.email;
   const password: string = req.body.password;
+  const confirmPassword: string = req.body.confirmPassword;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log("postSignup()", errors.array());
@@ -84,6 +90,11 @@ export const postSignup: IRequestHandler = (req, res, next) => {
       path: "/signup",
       pageTitle: "Signup",
       errorMessage: errors.array()[0]?.msg,
+      oldInput: {
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+    },
     }); // Error code for validation failed
   }
 
