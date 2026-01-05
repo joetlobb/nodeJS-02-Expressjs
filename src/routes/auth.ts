@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { check } from "express-validator";
+import { check, body } from "express-validator";
 import {
   getLogin,
   getNewPassword,
@@ -20,15 +20,23 @@ router.post("/logout", postLogout);
 router.get("/signup", getSignup);
 router.post(
   "/signup",
-  check("email")
-    .isEmail()
-    .withMessage("Please enter a valid email.")
-    .custom((value, { req }) => {
-      if (value === "test@test.com") {
-        throw new Error("This email is forbidden");
-      }
-      return true; // Return true to accept else condition
-    }),
+  [
+    check("email")
+      .isEmail()
+      .withMessage("Please enter a valid email.")
+      .custom((value, { req }) => {
+        if (value === "test@test.com") {
+          throw new Error("This email is forbidden");
+        }
+        return true; // Return true to accept else condition
+      }),
+    body(
+      "password",
+      "Please enter a password with only number and text and at least 5 characters long",
+    )
+      .isLength({ min: 5 })
+      .isAlphanumeric(),
+  ],
   postSignup,
 );
 router.get("/reset", getReset);
